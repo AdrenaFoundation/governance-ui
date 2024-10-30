@@ -11,9 +11,7 @@ import {
   withInsertTransaction,
   withSignOffProposal,
 } from '@solana/spl-governance'
-import {
-  withCreateProposal
-} from '@realms-today/spl-governance'
+import { withCreateProposal } from '@realms-today/spl-governance'
 import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
 import { chunk } from 'lodash'
 import { sendSignAndConfirmTransactions } from '@blockworks-foundation/mangolana/lib/transactions'
@@ -24,6 +22,7 @@ import {
   getVoterPDA,
   getVoterWeightPDA,
 } from 'VoteStakeRegistry/sdk/accounts'
+import { chargeFee, PROPOSAL_FEE } from 'actions/createChargeFee'
 
 export const createBase64Proposal = async (
   connection: Connection,
@@ -62,11 +61,7 @@ export const createBase64Proposal = async (
       proposalMint,
       client.program.programId
     )
-    const { voter } = getVoterPDA(
-      registrar,
-      walletPk,
-      client.program.programId
-    )
+    const { voter } = getVoterPDA(registrar, walletPk, client.program.programId)
     const { voterWeightPk } = getVoterWeightPDA(
       registrar,
       walletPk,
@@ -155,13 +150,24 @@ export const createBase64Proposal = async (
   await sendSignAndConfirmTransactions({
     connection,
     wallet,
-    transactionInstructions: txChunks.map((txChunk) => ({
-      instructionsSet: txChunk.map((tx) => ({
-        signers: [],
-        transactionInstruction: tx,
+    transactionInstructions: [
+      ...txChunks.map((txChunk) => ({
+        instructionsSet: txChunk.map((tx) => ({
+          signers: [],
+          transactionInstruction: tx,
+        })),
+        sequenceType: SequenceType.Sequential,
       })),
-      sequenceType: SequenceType.Sequential,
-    })),
+      {
+        instructionsSet: [
+          ...chargeFee(wallet.publicKey!, PROPOSAL_FEE).map((x) => ({
+            transactionInstruction: x,
+            signers: [],
+          })),
+        ],
+        sequenceType: SequenceType.Sequential,
+      },
+    ],
   })
   return proposalAddress
 }

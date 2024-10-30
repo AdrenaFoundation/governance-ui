@@ -137,12 +137,25 @@
   },
   {
     "symbol": "XANDC",
-    "category": "defi",
+    "category": "web3",
     "displayName": "Xandeum DevNet DAO",
     "programId": "DcG2PZTnj8s4Pnmp7xJswniCskckU5E6XsrKuyD7NYFK",
     "realmId": "CFprdZRYitjPYEDUQKDQZwao1jcRcU1z1GsFspMpN8Ci",
     "communityMint": "2j437Lt84XvysJiYbXTSJfAMy26Et9HiVGFvGFp8nYWH",
     "ogImage": "https://xandeum.com/wp-content/uploads/2023/05/Xandeum-Logo-Standard.png"
+  },
+  {
+    "symbol": "XAND",
+    "category": "web3",
+    "displayName": "Xandeum DAO",
+    "programId": "4ruGZqLoPVKX27Qm91Qjsqt5AzCtLrhmjKT8ubwHiVZu",
+    "realmId": "5JpYydB2VFcxbPGr8xmpefmJw86GQELCk7cB132wRXCa",
+    "communityMint": "XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx",
+    "ogImage": "https://raw.githubusercontent.com/bernieblume/XAND-meta-2024/main/XandToken.png",
+    "discord": "https://discord.gg/mGAxAuwnR9",
+    "twitter": "@xandeumnetwork",
+    "website": "https://www.xandeum.network/",
+    "shortDescription": "Storage Scaling Solution for Solana"
   },
   {
     "symbol": "HPC",
@@ -748,6 +761,18 @@
     "ogImage": "/realms/GoblinGold/img/logo.png",
     "website": "https://app.goblin.gold/",
     "twitter": "@goblingold_fi"
+  },
+  {
+    "symbol": "pumpkinSOL",
+    "displayName": "Pumpkin's Pool",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "EpvSHe3dnTQvz5qK8ks7zEbzA3ZABqaXW7fJfr8ULFiy",
+    "ogImage": "/realms/pumpkinspool/pumpkin_logo_cropped.png",
+    "bannerImage": "/realms/pumpkinspool/pumpkin_header.png",
+    "website": "https:/pumpkinspool.eco",
+    "twitter": "@pumpkinspool",
+    "discord": "https://discord.gg/pF6pMHApwP",
+    "shortDescription": "Pumpkin’s Pool delivers top staking returns while supporting animal welfare."
   },
   {
     "symbol": "DAINV",
@@ -3659,5 +3684,75 @@
     "website": "https://app.adrena.xyz/",
     "twitter": "@AdrenaProtocol",
     "discord": "https://discord.gg/adrena"
+  },
+  { 
+    "symbol": "IKB",
+    "bannerImage": "/realms/IKB/ikb_dao_banner.jpg",
+    "displayName": "International Klein Blue DAO",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "6Tae5nNMnyNpCqrBMHoyNVVRdbYkwnvL9EgzQkin9aHN",
+    "communityMint": "F7viRR7XKFeDxMG441DC1KDZu8cFjPvGFF6tnKYNVvFc",
+    "ogImage": "/realms/IKB/ikb_dao_logo.jpg",
+    "shortDescription": "The first modern art meme token. The IKB DAO federates $IKB token holders, enabling them to collaborate to perform experiments and to support the art community.",
+    "keywords": "blue, International Klein Blue, art, modern art, artmeme, meme, art community, art experiments",
+    "website": "https://ikb-token.co",
+    "twitter": "@ikb_token",
+    "telegram": "https://t.me/+8Fzp2CFx2yZiMDI5"
+  },
+  {
+    "symbol": "MRGY",
+    "displayName": "Mergey",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "GgXxU6HPCMFmwYkuFdbkm8QAvVhWiexraZAy9CX4CYRU",
+    "communityMint": "4i1ZW16fF5EHunJ9hCV4nqz9ckmeM6hg11BREy5x2Knw",
+    "ogImage": "/realms/mergey/logo.png",
+    "shortDescription": "Acquire. Merge. Divest. Permissionless memecoin M&A on Solana.",
+    "website": "https://mergey.fun",
+    "twitter": "@mergeydotfun",
+    "telegram": "https://t.me/+vUtROD2-n_4xNzZh"
+  },
+  {
+    "symbol": "PIBBLE",
+    "bannerImage": "/realms/PibbleDAO/Banner.png",
+    "displayName": "Pibble's Treats",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "GqPQwmN6VdqPEez9MrHCwLGfjy8z7g1fe432thRBrpLL",
+    "communityMint": "6qoHodWitraGtWFiLEvUZPz9THQt2vUJzV9Xd68ykAYP",
+    "ogImage": "/realms/PibbleDAO/logo.png",
+    "website": "https://pibble.xyz",
+    "twitter": "@PibbleSolana"
+  },
+  {
+    "symbol": "SATR",
+    "bannerImage": "/realms/artradeDAO/artrade-dao-banner.png",
+    "displayName": "Artrade DAO",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "4RaA3cPnHeoV3m2Z7JmMjhPaRM8ycWBDiFcGJSXPXYmE",
+    "communityMint": "AeKwC1GhEQJiBGtrynzzPAqQoJ6UKFj3qxqBDTc8oXYj",
+    "ogImage": "/realms/artradeDAO/artrade-dao-logo.png",
+    "website": "https://artrade.app",
+    "twitter": "@ArtradeApp"
+  },
+  {
+    "symbol": "TTDAO",
+    "bannerImage": "/realms/TTDAO/TT-Banner.png",
+    "ogImage": "/realms/TTDAO/TT-Logo.png",
+    "displayName": "TreeTherium DAO",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "Em9VDexjhxy35KRCtJGUus47LyfewK8rCx2Efc48BgbZ",
+    "website": "https://treetherium.io"
+  },
+   {
+    "symbol": "OGLG",
+    "displayName": "OGLONG DAO",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "29aHFaV12kCDK9tQWmccpTkjrCoRvEyYUnkEtjhPBpE5",
+    "communityMint": "D4R5MEE6eAywxURZJzwyVPcKxrzsSCgHV3VN667LLLv4",
+    "ogImage": "/realms/Oglong/oglong_logo.png",
+    "bannerImage": "/realms/Oglong/oglg_banner.jpg",
+    "shortDescription": "1st Community Owned BTC-FI launchpad backed by OGs.",
+    "website": "https://oglong.com",
+    "keywords": "BTC, Launchpad, BTC-FI",
+    "twitter": "@OGLong_official"
   }
-]
+  ]

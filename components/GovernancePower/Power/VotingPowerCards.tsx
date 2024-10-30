@@ -20,7 +20,7 @@ import ParclVotingPower from 'ParclVotePlugin/components/ParclVotingPower'
  *
  ***/
 
-// A list of all the plugins that have a dedicated voting power UI in realms.
+// A list of all the plugins that have a dedicated voting power ui in realms.
 // Plugins will use the vanilla voting power UI if they are not in this list.
 // The vanilla voting power UI will:
 // - assume the user can "deposit" tokens into the DAO

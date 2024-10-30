@@ -15,9 +15,7 @@ import {
   withAddSignatory,
   RpcContext,
 } from '@solana/spl-governance'
-import {
-  withCreateProposal
-} from '@realms-today/spl-governance'
+import { withCreateProposal } from '@realms-today/spl-governance'
 import {
   sendTransactionsV3,
   SequenceType,
@@ -30,6 +28,7 @@ import { deduplicateObjsFilter } from '@utils/instructionTools'
 import { sendSignAndConfirmTransactions } from '@utils/modifiedMangolana'
 import { InstructionDataWithHoldUpTime } from './createProposal'
 import { fetchProgramVersion } from '@hooks/queries/useProgramVersionQuery'
+import { chargeFee, PROPOSAL_FEE } from './createChargeFee'
 
 /** This is a modified version of createProposal that makes a lookup table, which is useful for especially large instructions */
 // TODO make a more generic, less redundant solution
@@ -275,6 +274,15 @@ export const createLUTProposal = async (
     .then((res) => res.value)
   if (lookupTableAccount === null) throw new Error()
 
+  txes.push({
+    instructionsSet: [
+      ...chargeFee(wallet.publicKey!, PROPOSAL_FEE).map((x) => ({
+        transactionInstruction: x,
+        signers: [],
+      })),
+    ],
+    sequenceType: SequenceType.Sequential,
+  })
   await sendTransactionsV3({
     callbacks,
     connection,
