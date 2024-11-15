@@ -248,6 +248,10 @@ export default function useGovernanceAssets() {
       name: 'Set Pool Allow Swap',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaSetPoolWhitelistedSwapper]: {
+      name: 'Set Pool Whitelisted Swapper',
+      packageId: PackageEnum.Adrena,
+    },
     [Instructions.AdrenaSetPoolAllowTrade]: {
       name: 'Set Pool Allow Trade',
       packageId: PackageEnum.Adrena,

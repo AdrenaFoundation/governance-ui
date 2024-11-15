@@ -302,6 +302,7 @@ export enum Instructions {
   AdrenaSetCustodyAllowTrade,
   AdrenaSetCustodyMaxCumulativeShortSizeUsd,
   AdrenaSetPoolAllowSwap,
+  AdrenaSetPoolWhitelistedSwapper,
   AdrenaSetPoolAllowTrade,
   AdrenaSetPoolAumSoftCapUsd,
   AdrenaSetPoolLiquidityState,
