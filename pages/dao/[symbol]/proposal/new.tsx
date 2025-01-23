@@ -69,6 +69,7 @@ import AdrenaSetProtocolFeeRecipient from './components/instructions/Adrena/SetP
 import AdrenaSetPoolAllowTrade from './components/instructions/Adrena/SetPoolAllowTrade'
 import AdrenaSetPoolAumSoftCapUsd from './components/instructions/Adrena/SetPoolAumSoftCapUsd'
 import AdrenaSetPoolLiquidityState from './components/instructions/Adrena/SetPoolLiquidityState'
+import AdrenaSetVestDelegate from './components/instructions/Adrena/SetVestDelegate'
 import AdrenaSetStakingLmEmissionPotentiometers from './components/instructions/Adrena/SetStakingLmEmissionPotentiometers'
 import AdrenaGenesisOtcIn from './components/instructions/Adrena/GenesisOtcIn'
 import AdrenaGenesisOtcOut from './components/instructions/Adrena/GenesisOtcOut'
@@ -487,6 +488,7 @@ const New = () => {
       [Instructions.AdrenaSetPoolAllowTrade]: AdrenaSetPoolAllowTrade,
       [Instructions.AdrenaSetPoolAumSoftCapUsd]: AdrenaSetPoolAumSoftCapUsd,
       [Instructions.AdrenaSetPoolLiquidityState]: AdrenaSetPoolLiquidityState,
+      [Instructions.AdrenaSetVestDelegate]: AdrenaSetVestDelegate,
       [Instructions.AdrenaSetStakingLmEmissionPotentiometers]: AdrenaSetStakingLmEmissionPotentiometers,
       [Instructions.AdrenaGenesisOtcIn]: AdrenaGenesisOtcIn,
       [Instructions.AdrenaGenesisOtcOut]: AdrenaGenesisOtcOut,

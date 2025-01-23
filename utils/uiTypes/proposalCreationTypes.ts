@@ -306,6 +306,7 @@ export enum Instructions {
   AdrenaSetPoolAllowTrade,
   AdrenaSetPoolAumSoftCapUsd,
   AdrenaSetPoolLiquidityState,
+  AdrenaSetVestDelegate,
   AdrenaSetStakingLmEmissionPotentiometers,
   AdrenaGenesisOtcIn,
   AdrenaGenesisOtcOut,

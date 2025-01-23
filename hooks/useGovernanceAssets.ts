@@ -265,6 +265,10 @@ export default function useGovernanceAssets() {
       name: 'Set Pool Liquidity State',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaSetVestDelegate]: {
+      name: 'Set Vest Delegate',
+      packageId: PackageEnum.Adrena,
+    },
     [Instructions.AdrenaSetStakingLmEmissionPotentiometers]: {
       name: 'Set Staking LM Emission Potentiometers',
       packageId: PackageEnum.Adrena,
