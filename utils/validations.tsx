@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { ProgramBufferAccount } from '@tools/validators/accounts/upgradeable-program'
 import { tryParseKey } from '@tools/validators/pubkey'
 import { create } from 'superstruct'
-import { tryGetTokenAccount } from './tokens'
+import { TokenAccount, tryGetTokenAccount } from './tokens'
 import * as yup from 'yup'
 import {
   getMintNaturalAmountFromDecimal,
@@ -11,7 +11,6 @@ import {
 
 import type { ConnectionContext } from 'utils/connection'
 import {
-  AccountInfo,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
   TOKEN_PROGRAM_ID,
@@ -35,12 +34,12 @@ const supportedPlugins = [
   ...VSR_PLUGIN_PKS,
   ...HELIUM_VSR_PLUGINS_PKS,
   ...GATEWAY_PLUGINS_PKS,
-  ...QV_PLUGINS_PKS
+  ...QV_PLUGINS_PKS,
 ]
 
 const getValidateAccount = async (
   connection: Connection,
-  pubKey: PublicKey
+  pubKey: PublicKey,
 ) => {
   const account = await connection.getParsedAccountInfo(pubKey)
   //TODO find way to validate account without sols
@@ -60,8 +59,8 @@ export const getValidatedPublickKey = (val: string) => {
 }
 
 const validateDoseTokenAccountMatchMint = (
-  tokenAccount: AccountInfo,
-  mint: PublicKey
+  tokenAccount: TokenAccount,
+  mint: PublicKey,
 ) => {
   if (tokenAccount.mint.toBase58() !== mint.toBase58()) {
     throw "Account mint doesn't match source account"
@@ -71,7 +70,7 @@ const validateDoseTokenAccountMatchMint = (
 export const tryGetAta = async (
   connection: Connection,
   mint: PublicKey,
-  owner: PublicKey
+  owner: PublicKey,
 ) => {
   //we do ATA validation
   const ata = await Token.getAssociatedTokenAddress(
@@ -79,7 +78,7 @@ export const tryGetAta = async (
     TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
     mint, // mint
     owner, // owner
-    true
+    true,
   )
   const tokenAccount = await tryGetTokenAccount(connection, ata)
   return tokenAccount
@@ -87,7 +86,7 @@ export const tryGetAta = async (
 
 export const isExistingTokenAccount = async (
   connection: ConnectionContext,
-  val: PublicKey
+  val: PublicKey,
 ) => {
   const account = await getValidateAccount(connection.current, val)
   const isExistingTokenAccount =
@@ -99,7 +98,7 @@ export const isExistingTokenAccount = async (
 const validateDestinationAccAddress = async (
   connection: ConnectionContext,
   val: any,
-  governedAccount?: PublicKey
+  governedAccount?: PublicKey,
 ) => {
   const currentConnection = connection.current
   const pubKey = getValidatedPublickKey(val)
@@ -111,12 +110,12 @@ const validateDestinationAccAddress = async (
     const tokenAccount = await tryGetTokenAccount(currentConnection, pubKey)
     const governedTokenAccount = await tryGetTokenAccount(
       currentConnection,
-      governedAccount
+      governedAccount,
     )
     if (tokenAccount && governedTokenAccount) {
       await validateDoseTokenAccountMatchMint(
         tokenAccount.account,
-        governedTokenAccount?.account.mint
+        governedTokenAccount?.account.mint,
       )
     }
   }
@@ -127,7 +126,7 @@ const validateDestinationAccAddress = async (
 const validateDestinationAccAddressWithMint = async (
   connection: ConnectionContext,
   val: any,
-  mintPubKey: PublicKey
+  mintPubKey: PublicKey,
 ) => {
   const currentConnection = connection.current
   const pubKey = getValidatedPublickKey(val)
@@ -146,7 +145,7 @@ const validateDestinationAccAddressWithMint = async (
 
 export const validateAccount = async (
   connection: ConnectionContext,
-  val: string
+  val: string,
 ) => {
   const accountPk = tryParseKey(val)
 
@@ -169,7 +168,7 @@ export const validateAccount = async (
 export const validateBuffer = async (
   connection: ConnectionContext,
   val: string,
-  governedAccount?: PublicKey
+  governedAccount?: PublicKey,
 ) => {
   const pubKey = tryParseKey(val)
   if (!governedAccount) {
@@ -236,21 +235,21 @@ export const getMeanCreateAccountSchema = ({ form }) => {
           ) {
             const mintValue = getMintNaturalAmountFromDecimalAsBN(
               val,
-              governedTokenAccount?.extensions.mint.account.decimals
+              governedTokenAccount?.extensions.mint.account.decimals,
             )
             return !!(governedTokenAccount?.extensions.token?.publicKey &&
             !governedTokenAccount.isSol
               ? governedTokenAccount.extensions.token.account.amount.gte(
-                  mintValue
+                  mintValue,
                 )
               : new BN(
-                  governedTokenAccount.extensions.solAccount!.lamports
+                  governedTokenAccount.extensions.solAccount!.lamports,
                 ).gte(mintValue))
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
   })
 }
@@ -284,21 +283,21 @@ export const getMeanFundAccountSchema = ({ form }) => {
           ) {
             const mintValue = getMintNaturalAmountFromDecimalAsBN(
               val,
-              governedTokenAccount?.extensions.mint.account.decimals
+              governedTokenAccount?.extensions.mint.account.decimals,
             )
             return !!(governedTokenAccount?.extensions.token?.publicKey &&
             !governedTokenAccount.isSol
               ? governedTokenAccount.extensions.token.account.amount.gte(
-                  mintValue
+                  mintValue,
                 )
               : new BN(
-                  governedTokenAccount.extensions.solAccount!.lamports
+                  governedTokenAccount.extensions.solAccount!.lamports,
                 ).gte(mintValue))
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
   })
 }
@@ -333,7 +332,7 @@ export const getMeanWithdrawFromAccountSchema = ({
               await validateDestinationAccAddress(
                 connection,
                 val,
-                new PublicKey(form.paymentStreamingAccount?.id)
+                new PublicKey(form.paymentStreamingAccount?.id),
               )
               return true
             } catch (e) {
@@ -347,7 +346,7 @@ export const getMeanWithdrawFromAccountSchema = ({
               message: `Destination account is required`,
             })
           }
-        }
+        },
       ),
     amount: yup
       .number()
@@ -364,14 +363,14 @@ export const getMeanWithdrawFromAccountSchema = ({
           if (val && form.paymentStreamingAccount && mintInfo) {
             const mintValue = getMintNaturalAmountFromDecimalAsBN(
               val,
-              mintInfo.decimals
+              mintInfo.decimals,
             )
             return new BN(form.paymentStreamingAccount.balance).gte(mintValue)
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
   })
 }
@@ -407,7 +406,7 @@ export const getMeanCreateStreamSchema = ({
               await validateDestinationAccAddress(
                 connection,
                 val,
-                new PublicKey(form.paymentStreamingAccount?.id)
+                new PublicKey(form.paymentStreamingAccount?.id),
               )
               return true
             } catch (e) {
@@ -421,7 +420,7 @@ export const getMeanCreateStreamSchema = ({
               message: `Destination account is required`,
             })
           }
-        }
+        },
       ),
     allocationAssigned: yup
       .number()
@@ -438,14 +437,14 @@ export const getMeanCreateStreamSchema = ({
           if (val && form.paymentStreamingAccount && mintInfo) {
             const mintValue = getMintNaturalAmountFromDecimalAsBN(
               val,
-              mintInfo.decimals
+              mintInfo.decimals,
             )
             return new BN(form.paymentStreamingAccount.balance).gte(mintValue)
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
     rateAmount: yup.number().required('Rate amount is required'),
   })
@@ -491,7 +490,7 @@ export const getDualFinanceGovernanceAirdropSchema = ({
             })
           }
           return true
-        }
+        },
       ),
     eligibilityEnd: yup
       .number()
@@ -508,7 +507,7 @@ export const getDualFinanceGovernanceAirdropSchema = ({
             })
           }
           return true
-        }
+        },
       ),
     treasury: yup.object().typeError('Treasury is required'),
     amount: yup
@@ -521,7 +520,7 @@ export const getDualFinanceGovernanceAirdropSchema = ({
           })
         }
         const numAtomsInTreasury = new BN(
-          form.treasury.extensions.token.account.amount
+          form.treasury.extensions.token.account.amount,
         )
         if (numAtomsInTreasury.lt(new BN(val))) {
           return this.createError({
@@ -582,7 +581,7 @@ export const getDualFinanceMerkleAirdropSchema = ({ form }: { form: any }) => {
               message: `Root is required`,
             })
           }
-        }
+        },
       ),
     treasury: yup.object().typeError('Treasury is required'),
     amount: yup
@@ -595,7 +594,7 @@ export const getDualFinanceMerkleAirdropSchema = ({ form }: { form: any }) => {
           })
         }
         const numAtomsInTreasury = new BN(
-          form.treasury.extensions.token.account.amount
+          form.treasury.extensions.token.account.amount,
         )
         if (numAtomsInTreasury.lt(new BN(val))) {
           return this.createError({
@@ -633,7 +632,7 @@ export const getDualFinanceLiquidityStakingOptionSchema = ({
             })
           }
           return true
-        }
+        },
       ),
     numTokens: yup
       .string()
@@ -645,7 +644,7 @@ export const getDualFinanceLiquidityStakingOptionSchema = ({
           })
         }
         const numAtomsInTreasury = new BN(
-          form.baseTreasury.extensions.token.account.amount
+          form.baseTreasury.extensions.token.account.amount,
         )
         if (numAtomsInTreasury.lt(new BN(val))) {
           return this.createError({
@@ -675,7 +674,7 @@ export const getDualFinanceStakingOptionSchema = ({
       .test(
         'is-not-too-long',
         'soName too long',
-        (value) => value !== undefined && value.length < 32
+        (value) => value !== undefined && value.length < 32,
       ),
     userPk: yup
       .string()
@@ -693,7 +692,7 @@ export const getDualFinanceStakingOptionSchema = ({
             return false
           }
           return true
-        }
+        },
       ),
     optionExpirationUnixSeconds: yup
       .number()
@@ -715,7 +714,7 @@ export const getDualFinanceStakingOptionSchema = ({
             })
           }
           return true
-        }
+        },
       ),
     numTokens: yup
       .string()
@@ -727,7 +726,7 @@ export const getDualFinanceStakingOptionSchema = ({
           })
         }
         const numAtomsInTreasury = new BN(
-          form.baseTreasury.extensions.token.account.amount
+          form.baseTreasury.extensions.token.account.amount,
         )
         if (numAtomsInTreasury.lt(new BN(val))) {
           return this.createError({
@@ -752,7 +751,7 @@ export const getDualFinanceGsoSchema = ({ form }: { form: any }) => {
       .test(
         'is-not-too-long',
         'soName too long',
-        (value) => value !== undefined && value.length < 32
+        (value) => value !== undefined && value.length < 32,
       ),
     optionExpirationUnixSeconds: yup
       .number()
@@ -774,7 +773,7 @@ export const getDualFinanceGsoSchema = ({ form }: { form: any }) => {
             })
           }
           return true
-        }
+        },
       ),
     numTokens: yup
       .string()
@@ -786,7 +785,7 @@ export const getDualFinanceGsoSchema = ({ form }: { form: any }) => {
           })
         }
         const numAtomsInTreasury = new BN(
-          form.baseTreasury.extensions.token.account.amount
+          form.baseTreasury.extensions.token.account.amount,
         )
         if (numAtomsInTreasury.lt(new BN(val))) {
           return this.createError({
@@ -834,7 +833,7 @@ export const getDualFinanceWithdrawSchema = () => {
     mintPk: yup
       .string()
       .test('is-valid-address1', 'Please enter a valid PublicKey', (value) =>
-        value ? validatePubkey(value) : true
+        value ? validatePubkey(value) : true,
       ),
   })
 }
@@ -851,12 +850,12 @@ export const getDualFinanceDelegateSchema = () => {
     delegateAccount: yup
       .string()
       .test('is-valid-address1', 'Please enter a valid PublicKey', (value) =>
-        value ? validatePubkey(value) : true
+        value ? validatePubkey(value) : true,
       ),
     realm: yup
       .string()
       .test('is-valid-address1', 'Please enter a valid PublicKey', (value) =>
-        value ? validatePubkey(value) : true
+        value ? validatePubkey(value) : true,
       ),
     token: yup.object().typeError('Delegate Token is required'),
   })
@@ -867,7 +866,7 @@ export const getDualFinanceDelegateWithdrawSchema = () => {
     realm: yup
       .string()
       .test('is-valid-address1', 'Please enter a valid PublicKey', (value) =>
-        value ? validatePubkey(value) : true
+        value ? validatePubkey(value) : true,
       ),
     token: yup.object().typeError('Delegate Token is required'),
   })
@@ -924,7 +923,7 @@ export const getTokenTransferSchema = ({
               val,
               typeof mintDecimals !== 'undefined'
                 ? mintDecimals
-                : governedTokenAccount?.extensions.mint.account.decimals
+                : governedTokenAccount?.extensions.mint.account.decimals,
             )
             if (tokenAmount) {
               return tokenAmount.gte(mintValue)
@@ -932,16 +931,16 @@ export const getTokenTransferSchema = ({
             return !!(governedTokenAccount?.extensions.token?.publicKey &&
             !governedTokenAccount.isSol
               ? governedTokenAccount.extensions.token.account.amount.gte(
-                  mintValue
+                  mintValue,
                 )
               : new BN(
-                  governedTokenAccount.extensions.solAccount!.lamports
+                  governedTokenAccount.extensions.solAccount!.lamports,
                 ).gte(mintValue))
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
     destinationAccount: yup
       .string()
@@ -962,7 +961,7 @@ export const getTokenTransferSchema = ({
               await validateDestinationAccAddress(
                 connection,
                 val,
-                governedTokenAccount?.extensions.transferAddress
+                governedTokenAccount?.extensions.transferAddress,
               )
               return true
             } catch (e) {
@@ -976,7 +975,7 @@ export const getTokenTransferSchema = ({
               message: `Destination account is required`,
             })
           }
-        }
+        },
       ),
   })
 }
@@ -1000,52 +999,53 @@ export const getBatchTokenTransferSchema = ({
   return yup.object().shape({
     governedTokenAccount: yup.object().required('Source account is required'),
     amount: yup.array().of(
-      yup.number()
-      .typeError('Amount is required')
-      .test(
-        'amount',
-        'Transfer amount must be less than the source account available amount',
-        async function (val: number) {
-          const isNft = nftMode || governedTokenAccount?.isNft
-          if (isNft || ignoreAmount) {
-            return true
-          }
-          if (val && !form.governedTokenAccount) {
-            return this.createError({
-              message: `Please select source account to validate the amount`,
-            })
-          }
-          if (
-            val &&
-            governedTokenAccount &&
-            governedTokenAccount?.extensions.mint
-          ) {
-            const mintValue = getMintNaturalAmountFromDecimalAsBN(
-              val,
-              typeof mintDecimals !== 'undefined'
-                ? mintDecimals
-                : governedTokenAccount?.extensions.mint.account.decimals
-            )
-            if (tokenAmount) {
-              return tokenAmount.gte(mintValue)
+      yup
+        .number()
+        .typeError('Amount is required')
+        .test(
+          'amount',
+          'Transfer amount must be less than the source account available amount',
+          async function (val: number) {
+            const isNft = nftMode || governedTokenAccount?.isNft
+            if (isNft || ignoreAmount) {
+              return true
             }
-            return !!(governedTokenAccount?.extensions.token?.publicKey &&
-            !governedTokenAccount.isSol
-              ? governedTokenAccount.extensions.token.account.amount.gte(
-                  mintValue
-                )
-              : new BN(
-                  governedTokenAccount.extensions.solAccount!.lamports
-                ).gte(mintValue))
-          }
-          return this.createError({
-            message: `Amount is required`,
-          })
-        }
-      )),
-    destinationAccount: yup
-      .array().of(
-        yup
+            if (val && !form.governedTokenAccount) {
+              return this.createError({
+                message: `Please select source account to validate the amount`,
+              })
+            }
+            if (
+              val &&
+              governedTokenAccount &&
+              governedTokenAccount?.extensions.mint
+            ) {
+              const mintValue = getMintNaturalAmountFromDecimalAsBN(
+                val,
+                typeof mintDecimals !== 'undefined'
+                  ? mintDecimals
+                  : governedTokenAccount?.extensions.mint.account.decimals,
+              )
+              if (tokenAmount) {
+                return tokenAmount.gte(mintValue)
+              }
+              return !!(governedTokenAccount?.extensions.token?.publicKey &&
+              !governedTokenAccount.isSol
+                ? governedTokenAccount.extensions.token.account.amount.gte(
+                    mintValue,
+                  )
+                : new BN(
+                    governedTokenAccount.extensions.solAccount!.lamports,
+                  ).gte(mintValue))
+            }
+            return this.createError({
+              message: `Amount is required`,
+            })
+          },
+        ),
+    ),
+    destinationAccount: yup.array().of(
+      yup
         .string()
         .test(
           'accountTests',
@@ -1064,7 +1064,7 @@ export const getBatchTokenTransferSchema = ({
                 await validateDestinationAccAddress(
                   connection,
                   val,
-                  governedTokenAccount?.extensions.transferAddress
+                  governedTokenAccount?.extensions.transferAddress,
                 )
                 return true
               } catch (e) {
@@ -1078,9 +1078,9 @@ export const getBatchTokenTransferSchema = ({
                 message: `Destination account is required`,
               })
             }
-          }
-        )
-      ),
+          },
+        ),
+    ),
   })
 }
 
@@ -1125,7 +1125,7 @@ export const getBurnTokensSchema = ({
               val,
               typeof mintDecimals !== 'undefined'
                 ? mintDecimals
-                : governedTokenAccount?.extensions.mint.account.decimals
+                : governedTokenAccount?.extensions.mint.account.decimals,
             )
             if (tokenAmount) {
               return tokenAmount.gte(mintValue)
@@ -1133,16 +1133,16 @@ export const getBurnTokensSchema = ({
             return !!(governedTokenAccount?.extensions.token?.publicKey &&
             !governedTokenAccount.isSol
               ? governedTokenAccount.extensions.token.account.amount.gte(
-                  mintValue
+                  mintValue,
                 )
               : new BN(
-                  governedTokenAccount.extensions.solAccount!.lamports
+                  governedTokenAccount.extensions.solAccount!.lamports,
                 ).gte(mintValue))
           }
           return this.createError({
             message: `Amount is required`,
           })
-        }
+        },
       ),
   })
 }
@@ -1161,7 +1161,7 @@ export const getMintSchema = ({ form, connection }) => {
         if (val && form.mintAccount && form.mintAccount?.extensions.mint) {
           const mintValue = getMintNaturalAmountFromDecimal(
             val,
-            form.mintAccount?.extensions.mint.account.decimals
+            form.mintAccount?.extensions.mint.account.decimals,
           )
           return !!(form.mintAccount.extensions.mint.publicKey && mintValue)
         }
@@ -1181,7 +1181,7 @@ export const getMintSchema = ({ form, connection }) => {
                 await validateDestinationAccAddressWithMint(
                   connection,
                   val,
-                  form.mintAccount.extensions.mint.publicKey
+                  form.mintAccount.extensions.mint.publicKey,
                 )
               } else {
                 return this.createError({
@@ -1200,7 +1200,7 @@ export const getMintSchema = ({ form, connection }) => {
               message: `Invalid destination account`,
             })
           }
-        }
+        },
       ),
     mintAccount: yup.object().nullable().required('Mint is required'),
   })
@@ -1231,7 +1231,7 @@ export const getStakeSchema = ({ form }) => {
         ) {
           const mintValue = getMintNaturalAmountFromDecimal(
             val,
-            form.governedTokenAccount?.extensions.mint.account.decimals
+            form.governedTokenAccount?.extensions.mint.account.decimals,
           )
           return !!(
             form.governedTokenAccount.extensions.solAccount.owner &&
@@ -1295,7 +1295,7 @@ export const getRealmCfgSchema = ({
                   message: `communityVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
         maxCommunityVoterWeightAddin: yup
           .string()
@@ -1311,7 +1311,7 @@ export const getRealmCfgSchema = ({
                   getValidatedPublickKey(val)
                   if (
                     [...NFT_PLUGINS_PKS, ...HELIUM_VSR_PLUGINS_PKS].includes(
-                      val
+                      val,
                     )
                   ) {
                     return true
@@ -1331,7 +1331,7 @@ export const getRealmCfgSchema = ({
                   message: `maxCommunityVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
         councilVoterWeightAddin: yup
           .string()
@@ -1363,7 +1363,7 @@ export const getRealmCfgSchema = ({
                   message: `councilVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
         maxCouncilVoterWeightAddin: yup
           .string()
@@ -1395,7 +1395,7 @@ export const getRealmCfgSchema = ({
                   message: `maxCouncilVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
       })
     : yup.object().shape({
@@ -1436,7 +1436,7 @@ export const getRealmCfgSchema = ({
                   message: `communityVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
         maxCommunityVoterWeightAddin: yup
           .string()
@@ -1452,7 +1452,7 @@ export const getRealmCfgSchema = ({
                   getValidatedPublickKey(val)
                   if (
                     [...NFT_PLUGINS_PKS, ...HELIUM_VSR_PLUGINS_PKS].includes(
-                      val
+                      val,
                     )
                   ) {
                     return true
@@ -1472,7 +1472,7 @@ export const getRealmCfgSchema = ({
                   message: `maxCommunityVoterWeightAddin is required`,
                 })
               }
-            }
+            },
           ),
       })
 }

@@ -60,7 +60,7 @@ const GoogleTag = React.memo(
       </React.Fragment>
     )
   },
-  () => true
+  () => true,
 )
 
 interface Props {
@@ -74,7 +74,7 @@ export function App(props: Props) {
 
   const endpoint = useMemo(
     () => (cluster === 'devnet' ? DEVNET_RPC : MAINNET_RPC),
-    [cluster]
+    [cluster],
   )
 
   const supportedWallets = useMemo(
@@ -82,7 +82,7 @@ export function App(props: Props) {
       detectEmbeddedInSquadsIframe()
         ? [new SquadsEmbeddedWalletAdapter()]
         : WALLET_PROVIDERS.map((provider) => provider.adapter),
-    []
+    [],
   )
 
   return (
@@ -105,14 +105,14 @@ export function AppContents(props: Props) {
   handleRouterHistory()
   useHandleGovernanceAssetsStore()
   useEffect(() => {
-    tokenPriceService.fetchSolanaTokenList()
+    tokenPriceService.fetchSolanaTokenListV2()
   }, [])
 
   const { getOwnedDeposits, resetDepositState } = useDepositStore()
 
   const { plugins } = useRealmVoterWeightPlugins('community')
   const usesVsr = plugins?.voterWeight.find((plugin) =>
-    VSR_PLUGIN_PKS.includes(plugin.programId.toString())
+    VSR_PLUGIN_PKS.includes(plugin.programId.toString()),
   )
   const ownTokenRecord = useUserCommunityTokenOwnerRecord().data?.result
 
@@ -126,7 +126,7 @@ export function AppContents(props: Props) {
   const router = useRouter()
   const { cluster } = router.query
   const updateSerumGovAccounts = useSerumGovStore(
-    (s) => s.actions.updateSerumGovAccounts
+    (s) => s.actions.updateSerumGovAccounts,
   )
   const { vsrClient } = useVsrClient()
 

@@ -9,7 +9,7 @@ import useRealm from '@hooks/useRealm'
 
 import { assembleWallets } from './assembleWallets'
 import { calculateTokenCountAndValue } from './calculateTokenCountAndValue'
-import { getDomains } from './getDomains'
+import { fetchDomainsByPubkey } from '@utils/domains'
 import { useRealmQuery } from '@hooks/queries/realm'
 import { useRealmConfigQuery } from '@hooks/queries/realmConfig'
 import {
@@ -33,7 +33,7 @@ interface Data {
 }
 
 export default function useTreasuryInfo(
-  getNftsAndDomains = true
+  getNftsAndDomains = true,
 ): Result<Data> {
   const realm = useRealmQuery().data?.result
   const config = useRealmConfigQuery().data?.result
@@ -46,11 +46,11 @@ export default function useTreasuryInfo(
   const programSelectorHook = useProgramSelector()
   const { mangoClient, mangoGroup } = UseMangoV4(
     programSelectorHook.program?.val,
-    programSelectorHook.program?.group
+    programSelectorHook.program?.group,
   )
 
   const loadingGovernedAccounts = useGovernanceAssetsStore(
-    (s) => s.loadGovernedAccounts
+    (s) => s.loadGovernedAccounts,
   )
   const [domainsLoading, setDomainsLoading] = useState(getNftsAndDomains)
   const [auxWallets, setAuxWallets] = useState<AuxiliaryWallet[]>([])
@@ -60,7 +60,7 @@ export default function useTreasuryInfo(
 
   const { counts, values } = useMemo(
     () => calculateTokenCountAndValue(accounts),
-    [accounts]
+    [accounts],
   )
 
   useEffect(() => {
@@ -68,18 +68,26 @@ export default function useTreasuryInfo(
       setDomainsLoading(true)
       setBuildingWallets(true)
 
-      getDomains(
-        accounts.filter((acc) => acc.isSol),
-        connection.current
-      ).then((domainNames) => {
-        setDomains(domainNames)
+      Promise.all(
+        accounts
+          .filter((acc) => acc.isSol)
+          .map((account) =>
+            fetchDomainsByPubkey(connection.current, account.pubkey),
+          ),
+      ).then((domainResults) => {
+        const allDomains = domainResults.flat().map((domain) => ({
+          name: domain.domainName?.replace('.sol', ''),
+          address: domain.domainAddress,
+          owner: domain.domainOwner,
+          type: domain.type,
+        }))
+
+        setDomains(allDomains)
         setDomainsLoading(false)
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree
   }, [
     loadingGovernedAccounts,
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree
     accounts.map((account) => account.pubkey.toBase58()).join('-'),
   ])
 
@@ -100,7 +108,7 @@ export default function useTreasuryInfo(
         mint,
         realm,
         config,
-        realmInfo
+        realmInfo,
       )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree

@@ -46,6 +46,7 @@ import {
   Wallet,
 } from '@coral-xyz/anchor'
 import { sha256 } from '@noble/hashes/sha256'
+import { TOKEN_2022_INST } from './programs/token2022'
 
 /**
  * Default governance program id instance
@@ -151,6 +152,30 @@ export const ACCOUNT_NAMES = {
   bDgqY2Qt4y2jSsRNvD7FETkRJJNiYZT1Q3UnAYYzUCo: 'DAO: (DEAN) Community Reserve',
   BtJaNZrZZmagHGzCU2VazSJWzBS9KY7tG41enBrT2NtU: 'DAO: (DEAN) Liquidity Reserve',
 
+  // EpicentralDAO
+  LABSh5DTebUcUbEoLzXKCiXFJLecDFiDWiBGUU1GpxR: 'LABS Token Mint',
+
+  Crn54GhCKYkpoy1Mp1qZWJrzsaSbJQDR46uF5Rn4gRot: 'Main DAO Treasury',
+  '3BEvopNQ89zkM4r6ADva18i5fao1sqR1pmswyQyfj838': 'SOL Main Reserve',
+  Gh2MXR1b4CM3M5nnkoPE8Y1fpQ1H7Ujg4m8rAU2N9cCJ: 'LABS Main Vault',
+
+  '5jagwdtwXufeiqn6XLxWaeCRPYT924Axyzo9ZDLAxPFC': 'Community Treasury',
+  DR1P6yBNXQ8YLBrpYpU3FjnnruStMRzm2y2cAA3D6ynm: 'SOL Community Reserve',
+  '5hYmaq1Su7fJLPAS4mKMiUq3tirR72duGGMRU2ejFMaQ':
+    'LABS Contributor Bonus Vault',
+
+  '24Z8YUVPBSP6JHfrsy8wkGXXf1JpuA7JGfmrk2frE1zL': 'Marketing Treasury',
+  '6tpxdCf56XZQbdieLFZGDgaWpefc6SZPGy9Sg6MqYVRB': 'SOL Marketing Reserve',
+  BHjWxsNEwMCwtPWoJMsjFzjXCTgr6kbHKprGrNgLfW81: 'LABS Marketing Vault',
+
+  '9zUzsav4JcUHnmzsT9YFkbk2YvjxEf9MosVTKYDDnnnW': 'Rewards Treasury',
+  '6yuntQAS5gSwhhKaXG3QYbcwXPxhsbULu9Tzv9mizUUm': 'SOL Rewards Reserve',
+  '6PPtCuNPxipkwATrXorGNMFsEiJK2WNwNRVdgzTJZfU8': 'LABS DeFi Rewards Vault',
+  // Epicentral Labs Core Team
+  EPTE4ewwiBdSu53NHc2Q57tyiYkcPai3VLu3BSUUN89C: 'Core Team Wallet',
+  '7fGPDUx91yTASVAyt3DTUEnxMN1ghL1oQ69BVv8q8z3z': 'Admin Treasury',
+  GpbTR5zgfgM6tJt1epcXFvNELusiacc7qKr845FRnzZv: 'SOL Admin Reserve',
+  Auecwis4vTxvHHkqKvPiut3GzuSN85ZWM6z2WDhZtrxh: 'LABS Admin Vault',
   // Physis DAO
   '29epeLvAMyRXtpA1HaoKB1hGcAnrc1NvMCbaZ8AVRwEi': 'Physis DAO Treasury',
   '4i2Yjk5bUiLeVNwqBpkRdFSECSCvMgKoeCSdRSx1TPcz': 'DAO: Rewards (PHY)',
@@ -340,6 +365,14 @@ export const ACCOUNT_NAMES = {
 
   // Parcl
   '9Waj7NNTzEhyHf1j1F36xgtnXaLoAxVBFhf6VxE9fgaf': 'Parcl DAO',
+
+  // Xandeum DAO
+  '3tWGHdmFd5FPqiZbR9r57qLDTnkxLBLAKno71a72ySQk': 'Xandeum DAO Community Building',
+  '4DZTzekhXx9QpG3MLzp25LGsmDRCUqA1BsVU2KuxCYdF': 'Xandeum DAO Ecosystem Development',
+  'DdphfkqpTJiHRQP6c7qVjtjG8aMQMPhEHpYjrRDSGpsC': 'Xandeum DAO Staking Rewards',
+  'EYu8Zh4odXLkpquHZMT6fKyX35qa84u5WGxZJ1Wi6BCr': 'Xandeum DAO Community Building',
+  '2dUeHJ1nbfoEJ3Qm9eDLjTG3cqSiCpJUifhEZi1AaW1R': 'Xandeum DAO Community Building',
+  
 }
 
 // TODO: Add this to on-chain metadata to Governance account
@@ -377,6 +410,7 @@ export const HIDDEN_PROPOSALS = new Map<string, string>([
   ['CRmUPr8CbfPQ4MAoo2yxSf5qL2nPsddL69kowMfp1JYP', ''],
   ['8msNFq5VBectsGAv66zYx5QRve1p3m6ZEz49xaWX3tbd', ''],
   ['3jU2YuKXKBw4cWx9taPDfhQZ8RFLmFUx3HLxMrh7w749', ''],
+  ['8eiBtZ7ZgAZEK747z1mXKPktQg3gdbgB9ew78t9LXwyL', ''],
 ])
 
 export const DEFAULT_NATIVE_SOL_MINT =
@@ -494,7 +528,7 @@ export interface InstructionDescriptorFactory {
   getDataUI: (
     connection: Connection,
     data: Uint8Array,
-    accounts: AccountMetaData[]
+    accounts: AccountMetaData[],
   ) => Promise<JSX.Element>
 }
 
@@ -507,6 +541,7 @@ export interface InstructionDescriptor {
 // Well known program instructions displayed on the instruction card
 export const INSTRUCTION_DESCRIPTORS = {
   ...SPL_TOKEN_INSTRUCTIONS,
+  ...TOKEN_2022_INST,
   ...BPF_UPGRADEABLE_LOADER_INSTRUCTIONS,
   ...RAYDIUM_INSTRUCTIONS,
   ...MARINADE_INSTRUCTIONS,
@@ -651,7 +686,7 @@ function generateInstructionDescriptorFromIDL(idl: Idl) {
 export async function getInstructionDescriptor(
   connection: ConnectionContext,
   instruction: InstructionData,
-  realm?: ProgramAccount<Realm> | undefined
+  realm?: ProgramAccount<Realm> | undefined,
 ) {
   // Use on-chain IDL if available
   {
@@ -687,7 +722,7 @@ export async function getInstructionDescriptor(
   if (
     (realm && instructionToDecode.programId.equals(realm.owner)) ||
     instructionToDecode.programId.equals(
-      new PublicKey(DEFAULT_GOVERNANCE_PROGRAM_ID)
+      new PublicKey(DEFAULT_GOVERNANCE_PROGRAM_ID),
     )
   ) {
     descriptors =
@@ -696,7 +731,7 @@ export async function getInstructionDescriptor(
     instructionToDecode = {
       accounts: instructionToDecode.accounts.slice(
         2,
-        instructionToDecode.accounts.length
+        instructionToDecode.accounts.length,
       ),
       data: instructionToDecode.data.slice(8, instructionToDecode.data.length),
       programId: instructionToDecode.accounts[1].pubkey,
@@ -730,7 +765,7 @@ export async function getInstructionDescriptor(
       instructionToDecode.data,
       instructionToDecode.accounts,
       instructionToDecode.programId,
-      connection.cluster
+      connection.cluster,
     ))) ?? <>{JSON.stringify(instructionToDecode.data)}</>
 
   const dataUiWithAdditionalInfo = (
