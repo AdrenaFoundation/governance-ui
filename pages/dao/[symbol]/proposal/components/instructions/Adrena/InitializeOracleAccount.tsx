@@ -55,7 +55,7 @@ export default function InitializeOracleAccount({
     const isValid = await validateInstruction()
     const governance = form.governedAccount?.governance
 
-    if (!isValid || !governance || !adrenaClient|| !wallet?.publicKey) {
+    if (!isValid || !governance || !adrenaClient || !wallet?.publicKey) {
       return {
         serializedInstruction: '',
         isValid,
@@ -117,7 +117,6 @@ export default function InitializeOracleAccount({
       .object()
       .nullable()
       .required('Program governed account is required'),
-      owner: yup.string().required('Program governed account is required'),
     })
 
   const inputs: InstructionInput[] = [

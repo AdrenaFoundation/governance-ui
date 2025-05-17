@@ -98,7 +98,6 @@ export default function PatchCustodiesOracles({
       .object()
       .nullable()
       .required('Program governed account is required'),
-      owner: yup.string().required('Program governed account is required'),
     })
 
   const inputs: InstructionInput[] = [
