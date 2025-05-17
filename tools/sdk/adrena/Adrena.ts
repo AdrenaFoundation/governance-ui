@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { IDL, Adrena } from '../../../idls/adrena'
-import { AnchorProvider, IdlAccounts, Program } from '@coral-xyz/anchor'
+import { AnchorProvider, IdlAccounts, IdlTypes, Program } from '@coral-xyz/anchor'
 
 export enum OriginBucket {
   CoreContributor = 0,
@@ -15,6 +15,7 @@ export enum LiquidityState {
 }
 
 type Accounts = IdlAccounts<Adrena>
+type Params = IdlTypes<Adrena>;
 
 export type Cortex = Accounts['cortex']
 export type VestRegistry = Accounts['vestRegistry']
@@ -25,6 +26,7 @@ export type UserStaking = Accounts['userStaking']
 export type Staking = Accounts['staking']
 export type Vest = Accounts['vest']
 export type UserProfile = Accounts['userProfile']
+export type LimitedString = Params['LimitedString'];
 
 export type WithPubkey<T> = T & { pubkey: PublicKey }
 
@@ -45,6 +47,11 @@ export default class AdrenaClient {
 
   public readonly cortexPda: PublicKey = PublicKey.findProgramAddressSync(
     [Buffer.from('cortex')],
+    this.programId
+  )[0]
+
+  public readonly oraclePda: PublicKey = PublicKey.findProgramAddressSync(
+    [Buffer.from('oracle')],
     this.programId
   )[0]
 
@@ -183,5 +190,18 @@ export default class AdrenaClient {
       ...staking.account,
       pubkey: staking.publicKey,
     }))
+  }
+
+  public toLimitedStringBuffer(str: string): LimitedString {
+    const buffer = new Uint8Array(31);
+    const ob = Buffer.from(str, 'utf-8');
+
+    // Recreate a LimitedString
+    buffer.set(ob.slice(0, 31), 0);
+
+    return {
+      value: Array.from(buffer).map(x => Number(x)),
+      length: ob.length,
+    };
   }
 }

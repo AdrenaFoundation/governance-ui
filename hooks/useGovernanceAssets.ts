@@ -284,6 +284,14 @@ export default function useGovernanceAssets() {
       name: 'Genesis OTC IN',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaInitializeOracleAccount]: {
+      name: 'Initialize Oracle Account',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaPatchCustodiesOracles]: {
+      name: 'Patch Custodies Oracles',
+      packageId: PackageEnum.Adrena,
+    },
     [Instructions.AdrenaGenesisOtcOut]: {
       name: 'Genesis OTC OUT',
       packageId: PackageEnum.Adrena,

@@ -72,6 +72,8 @@ import AdrenaSetPoolLiquidityState from './components/instructions/Adrena/SetPoo
 import AdrenaSetVestDelegate from './components/instructions/Adrena/SetVestDelegate'
 import AdrenaSetStakingLmEmissionPotentiometers from './components/instructions/Adrena/SetStakingLmEmissionPotentiometers'
 import AdrenaGenesisOtcIn from './components/instructions/Adrena/GenesisOtcIn'
+import AdrenaInitializeOracleAccount from './components/instructions/Adrena/InitializeOracleAccount'
+import AdrenaPatchCustodiesOracles from './components/instructions/Adrena/PatchCustodiesOracles'
 import AdrenaGenesisOtcOut from './components/instructions/Adrena/GenesisOtcOut'
 import AdrenaAddCustody from './components/instructions/Adrena/AddCustody'
 import AdrenaSetCustodyConfig from './components/instructions/Adrena/SetCustodyConfig'
@@ -512,6 +514,8 @@ const New = () => {
       [Instructions.AdrenaAddCustody]: AdrenaAddCustody,
       [Instructions.AdrenaSetCustodyConfig]: AdrenaSetCustodyConfig,
       [Instructions.AdrenaSetPoolWhitelistedSwapper]: AdrenaSetPoolWhitelistedSwapper,
+      [Instructions.AdrenaInitializeOracleAccount]: AdrenaInitializeOracleAccount,
+      [Instructions.AdrenaPatchCustodiesOracles]: AdrenaPatchCustodiesOracles,
       [Instructions.Burn]: BurnTokens,
       [Instructions.Transfer]: SplTokenTransfer,
       [Instructions.ProgramUpgrade]: ProgramUpgrade,
