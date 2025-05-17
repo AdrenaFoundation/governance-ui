@@ -499,3 +499,7 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/word-break#values */
 .dialect > div > button {
   border-radius: 999px !important;
 }
+
+.shared-container {
+  @apply rounded-xl border border-bkg-4 md:rounded-2xl;
+}

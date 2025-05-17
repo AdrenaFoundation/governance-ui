@@ -26,7 +26,7 @@ import useGovernanceAssets, {
 } from '@hooks/useGovernanceAssets'
 import useQueryContext from '@hooks/useQueryContext'
 import useRealm from '@hooks/useRealm'
-import { getTimestampFromDays } from '@tools/sdk/units'
+import { getTimestampFromDays, getTimestampFromMinutes } from '@tools/sdk/units'
 import { formValidation, isFormValid } from '@utils/formValidation'
 import {
   ComponentInstructionData,
@@ -112,6 +112,7 @@ import TransferDomainName from './components/instructions/TransferDomainName'
 import InitUser from './components/instructions/Serum/InitUser'
 import GrantForm from './components/instructions/Serum/GrantForm'
 import JoinDAO from './components/instructions/JoinDAO'
+import WithdrawDAO from './components/instructions/WithdrawFromDAO'
 import UpdateConfigAuthority from './components/instructions/Serum/UpdateConfigAuthority'
 import UpdateConfigParams from './components/instructions/Serum/UpdateConfigParams'
 import { StyledLabel, inputClasses } from '@components/inputs/styles'
@@ -153,6 +154,8 @@ import FillVaults from './components/instructions/DistrubtionProgram/FillVaults'
 import MeshRemoveMember from './components/instructions/Squads/MeshRemoveMember'
 import MeshAddMember from './components/instructions/Squads/MeshAddMember'
 import MeshChangeThresholdMember from './components/instructions/Squads/MeshChangeThresholdMember'
+import SquadsV4AddMember from './components/instructions/Squads/SquadsV4AddMember'
+import SquadsV4ChangeThresholdMember from './components/instructions/Squads/SquadsV4ChangeThresholdMember'
 import PythRecoverAccount from './components/instructions/Pyth/PythRecoverAccount'
 import { useVoteByCouncilToggle } from '@hooks/useVoteByCouncilToggle'
 import BurnTokens from './components/instructions/BurnTokens'
@@ -162,6 +165,13 @@ import SymmetryEditBasket from './components/instructions/Symmetry/SymmetryEditB
 import SymmetryDeposit from './components/instructions/Symmetry/SymmetryDeposit'
 import SymmetryWithdraw from './components/instructions/Symmetry/SymmetryWithdraw'
 import PythUpdatePoolAuthority from './components/instructions/Pyth/PythUpdatePoolAuthority'
+import PlaceLimitOrder from './components/instructions/Manifest/PlaceLimitOrder'
+import SettleToken from './components/instructions/Manifest/SettleToken'
+import CancelLimitOrder from './components/instructions/Manifest/CancelLimitOrder'
+import WithdrawFees from './components/instructions/Token2022/WithdrawFees'
+import SquadsV4RemoveMember from './components/instructions/Squads/SquadsV4RemoveMember'
+import CollectPoolFees from './components/instructions/Raydium/CollectPoolFees'
+import CollectVestedTokens from './components/instructions/Raydium/CollectVestedTokens'
 
 const TITLE_LENGTH_LIMIT = 130
 // the true length limit is either at the tx size level, and maybe also the total account size level (I can't remember)
@@ -366,20 +376,26 @@ const New = () => {
           handleTurnOffLoaders()
           throw Error('No governance selected')
         }
-
+        console.log(instructions)
         const additionalInstructions = instructions
-          .flatMap(
-            (instruction) =>
-              instruction.additionalSerializedInstructions
-                ?.filter(
-                  (value, index, self) =>
-                    index === self.findIndex((t) => t === value),
-                )
-                .map((x) => ({
-                  data: x ? getInstructionDataFromBase64(x) : null,
-                  ...getDefaultInstructionProps(instruction, governance),
-                })),
-          )
+          .flatMap((instruction) => {
+            return instruction.additionalSerializedInstructions
+              ?.filter((x) => x)
+              .map((x) => ({
+                data: x
+                  ? getInstructionDataFromBase64(
+                      typeof x === 'string' ? x : x.serializedInstruction,
+                    )
+                  : null,
+                ...getDefaultInstructionProps(instruction, governance),
+                holdUpTime:
+                  typeof x === 'string'
+                    ? instruction.customHoldUpTime
+                      ? getTimestampFromDays(instruction.customHoldUpTime)
+                      : governance?.account?.config.minInstructionHoldUpTime
+                    : getTimestampFromMinutes(x.holdUpTime),
+              }))
+          })
           .filter((x) => x) as InstructionDataWithHoldUpTime[]
 
         const instructionsData = [
@@ -544,6 +560,10 @@ const New = () => {
       [Instructions.SquadsMeshRemoveMember]: MeshRemoveMember,
       [Instructions.SquadsMeshAddMember]: MeshAddMember,
       [Instructions.SquadsMeshChangeThresholdMember]: MeshChangeThresholdMember,
+      [Instructions.SquadsV4RemoveMember]: SquadsV4RemoveMember,
+      [Instructions.SquadsV4AddMember]: SquadsV4AddMember,
+      [Instructions.SquadsV4ChangeThresholdMember]:
+        SquadsV4ChangeThresholdMember,
       [Instructions.PythRecoverAccount]: PythRecoverAccount,
       [Instructions.PythUpdatePoolAuthority]: PythUpdatePoolAuthority,
       [Instructions.CreateSolendObligationAccount]: CreateObligationAccount,
@@ -584,10 +604,14 @@ const New = () => {
       [Instructions.WithdrawValidatorStake]: WithdrawValidatorStake,
       [Instructions.DelegateStake]: DelegateStake,
       [Instructions.RemoveStakeLock]: RemoveLockup,
+      [Instructions.PlaceLimitOrder]: PlaceLimitOrder,
+      [Instructions.SettleToken]: SettleToken,
+      [Instructions.CancelLimitOrder]: CancelLimitOrder,
       [Instructions.SplitStake]: SplitStake,
       [Instructions.DifferValidatorStake]: null,
       [Instructions.TransferDomainName]: TransferDomainName,
       [Instructions.SerumInitUser]: InitUser,
+      [Instructions.TokenWithdrawFees]: WithdrawFees,
       [Instructions.SerumGrantLockedSRM]: {
         componentBuilderFunction: ({ index, governance }) => (
           <GrantForm
@@ -631,6 +655,7 @@ const New = () => {
       [Instructions.SerumUpdateGovConfigParams]: UpdateConfigParams,
       [Instructions.SerumUpdateGovConfigAuthority]: UpdateConfigAuthority,
       [Instructions.JoinDAO]: JoinDAO,
+      [Instructions.WithdrawFromDAO]: WithdrawDAO,
       [Instructions.AddKeyToDID]: AddKeyToDID,
       [Instructions.RemoveKeyFromDID]: RemoveKeyFromDID,
       [Instructions.AddServiceToDID]: AddServiceToDID,
@@ -641,6 +666,8 @@ const New = () => {
       [Instructions.SymmetryEditBasket]: SymmetryEditBasket,
       [Instructions.SymmetryDeposit]: SymmetryDeposit,
       [Instructions.SymmetryWithdraw]: SymmetryWithdraw,
+      [Instructions.CollectPoolFees]: CollectPoolFees ,
+      [Instructions.CollectVestedTokens]: CollectVestedTokens
     }),
     [governance?.pubkey?.toBase58()],
   )

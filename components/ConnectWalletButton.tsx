@@ -18,6 +18,7 @@ import { ExternalLinkIcon } from '@heroicons/react/outline'
 import { DEFAULT_PROVIDER } from '../utils/wallet-adapters'
 import useViewAsWallet from '@hooks/useViewAsWallet'
 import { ProfileName } from '@components/Profile/ProfileName'
+import { usePlausible } from 'next-plausible'
 
 const StyledWalletProviderLabel = styled.p`
   font-size: 0.65rem;
@@ -28,7 +29,7 @@ const ConnectWalletButton = (props) => {
   const { pathname, query, replace } = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const debugAdapter = useViewAsWallet()
-
+  const plausible = usePlausible()
   const {
     wallets,
     select,
@@ -52,6 +53,15 @@ const ConnectWalletButton = (props) => {
         await disconnect()
       } else {
         await connect()
+        try {
+          plausible('ConnectWallet', {
+            props: {
+              walletConnected: wallet?.adapter?.publicKey?.toString(),
+              walletProvider: wallet?.adapter?.name,
+            },
+          })
+          // eslint-disable-next-line no-empty
+        } catch (e) {}
       }
     } catch (e: any) {
       if (e.name === 'WalletNotReadyError') {

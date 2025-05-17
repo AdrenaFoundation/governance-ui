@@ -57,7 +57,7 @@ export default function useRealmProposalVotes(
       const maxVoteWeight = getProposalMaxVoteWeight(
         realm,
         proposal,
-        proposalMint.account,
+        proposalMint.account
       )
 
       const voteThresholdPct =

@@ -49,7 +49,7 @@ export const useMembersQuery = () => {
 
   const query = useQuery({
     enabled,
-    queryKey: [],
+    queryKey: [realm?.pubkey.toBase58(), 'all-dao-members'],
     queryFn: async () => {
       if (!enabled) throw new Error()
 

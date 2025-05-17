@@ -9,6 +9,8 @@ import {
   GovernanceConfig,
   GoverningTokenConfigAccountArgs,
   GoverningTokenType,
+  MintMaxVoteWeightSource,
+  MintMaxVoteWeightSourceType,
   SetRealmAuthorityAction,
   TOKEN_PROGRAM_ID,
   VoteThresholdType,
@@ -40,10 +42,12 @@ import { createGovernanceThresholds } from './configs'
 import { Token } from '@solana/spl-token'
 import { fetchProgramVersion } from '@hooks/queries/useProgramVersionQuery'
 import { fetchMintInfoByPubkey } from '@hooks/queries/mintInfo'
+import { PluginName } from '@constants/plugins'
 
 export interface Web3Context {
   connection: Connection
-  wallet: WalletSigner
+  wallet: WalletSigner,
+  pluginList?: PluginName[]
 }
 interface RealmCreationV2 {
   _programVersion: 2
@@ -67,6 +71,7 @@ interface RealmCreationV2 {
   existingCouncilMintPk: PublicKey | undefined
   transferCouncilMintAuthority: boolean
   councilWalletPks: PublicKey[]
+  isMultiSig?: boolean
 
   communityTokenConfig: GoverningTokenConfigAccountArgs
   skipRealmAuthority?: boolean
@@ -106,6 +111,9 @@ export async function prepareRealmCreation({
 
   communityTokenConfig,
   skipRealmAuthority,
+  pluginList,
+
+  isMultiSig,
   ...params
 }: RealmCreation & Web3Context) {
   const realmInstructions: TransactionInstruction[] = []
@@ -151,12 +159,21 @@ export async function prepareRealmCreation({
   const communityMintDecimals =
     existingCommunityMint?.decimals || DEFAULT_MINT_DECIMALS
 
-  const communityMaxVoteWeightSource = parseMintMaxVoteWeight(
-    useSupplyFactor,
-    communityMintDecimals,
-    communityMintSupplyFactor,
-    communityAbsoluteMaxVoteWeight,
-  )
+  if (pluginList?.includes('token_voter') && !existingCommunityMint?.supply) {
+    throw new Error("Cannot load the community mint info, Try again.")
+  }
+
+  const communityMaxVoteWeightSource = pluginList?.includes("token_voter") ?
+    new MintMaxVoteWeightSource({
+      type: MintMaxVoteWeightSourceType.Absolute, 
+      value: existingCommunityMint!.supply
+    }) :
+    parseMintMaxVoteWeight(
+      useSupplyFactor,
+      communityMintDecimals,
+      communityMintSupplyFactor,
+      communityAbsoluteMaxVoteWeight,
+    )
 
   console.log('Prepare realm - community mint address', existingCommunityMintPk)
   console.log('Prepare realm - community mint account', existingCommunityMint)
@@ -170,7 +187,7 @@ export async function prepareRealmCreation({
 
   let communityMintPk = existingCommunityMintPk
 
-  if (!communityMintPk) {
+  if (!communityMintPk || pluginList?.includes('token_voter')) {
     // Create community mint
     communityMintPk = await withCreateMint(
       connection,
@@ -268,7 +285,7 @@ export async function prepareRealmCreation({
     communityMaxVoteWeightSource,
     minCommunityTokensToCreateAsMintValue,
     communityTokenConfig,
-    params._programVersion === 3 ? params.councilTokenConfig : undefined,
+    params._programVersion === 3 ? params.councilTokenConfig : undefined
   )
 
   const doesRealmExist = await connection.getAccountInfo(realmPk)
@@ -364,7 +381,7 @@ export async function prepareRealmCreation({
     baseVotingTime:
       getTimestampFromDays(maxVotingTimeInDays) - VOTING_COOLOFF_TIME_DEFAULT,
     communityVoteTipping: VoteTipping.Disabled,
-    councilVoteTipping: VoteTipping.Strict,
+    councilVoteTipping: isMultiSig ? VoteTipping.Early : VoteTipping.Strict,
     minCouncilTokensToCreateProposal: new BN(initialCouncilTokenAmount),
     councilVoteThreshold: councilVoteThreshold,
     councilVetoVoteThreshold: councilVetoVoteThreshold,

@@ -23,6 +23,9 @@ import ProgramUpgradeInfo from './ProgramUpgradeInfo'
 import { AccountType } from '@utils/uiTypes/assets'
 import useWalletOnePointOh from '@hooks/useWalletOnePointOh'
 import useLegacyConnectionContext from '@hooks/useLegacyConnectionContext'
+import ForwarderProgram, {
+  useForwarderProgramHelpers,
+} from '@components/ForwarderProgram/ForwarderProgram'
 
 const ProgramUpgrade = ({
   index,
@@ -35,6 +38,8 @@ const ProgramUpgrade = ({
   const wallet = useWalletOnePointOh()
   const { realmInfo } = useRealm()
   const { assetAccounts } = useGovernanceAssets()
+  const forwarderProgramHelpers = useForwarderProgramHelpers()
+
   const governedProgramAccounts = assetAccounts.filter(
     (x) => x.type === AccountType.PROGRAM,
   )
@@ -71,7 +76,9 @@ const ProgramUpgrade = ({
         form.governedAccount.extensions.program!.authority!,
         bufferSpillAddress,
       )
-      serializedInstruction = serializeInstructionToBase64(upgradeIx)
+      serializedInstruction = serializeInstructionToBase64(
+        forwarderProgramHelpers.withForwarderWrapper(upgradeIx),
+      )
     }
     const obj: UiInstruction = {
       serializedInstruction: serializedInstruction,
@@ -112,7 +119,11 @@ const ProgramUpgrade = ({
       index,
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree
-  }, [form])
+  }, [
+    form,
+    forwarderProgramHelpers.form,
+    forwarderProgramHelpers.withForwarderWrapper,
+  ])
 
   const schema = yup.object().shape({
     bufferAddress: yup
@@ -213,6 +224,7 @@ const ProgramUpgrade = ({
         }
         error={formErrors[programUpgradeFormNameOf('bufferSpillAddress')]}
       />
+      <ForwarderProgram {...forwarderProgramHelpers}></ForwarderProgram>
     </>
   )
 }

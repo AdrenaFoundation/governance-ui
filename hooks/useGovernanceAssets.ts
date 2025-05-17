@@ -170,6 +170,9 @@ export default function useGovernanceAssets() {
       name: 'Mango Market v4',
       image: '/img/mango.png',
     },
+    [PackageEnum.Manifest]: {
+      name: 'Manifest',
+    },
     [PackageEnum.MeanFinance]: {
       name: 'Mean Finance',
       image: '/img/meanfinance.png',
@@ -204,6 +207,10 @@ export default function useGovernanceAssets() {
     [PackageEnum.Switchboard]: {
       name: 'Switchboard',
       image: '/img/switchboard.png',
+    },
+    [PackageEnum.Raydium]: {
+      name: 'Raydium',
+      image: '/img/raydium.png',
     },
     [PackageEnum.VsrPlugin]: {
       name: 'Vsr Plugin',
@@ -370,6 +377,10 @@ export default function useGovernanceAssets() {
       name: 'Join a DAO',
       packageId: PackageEnum.Common,
     },
+    [Instructions.WithdrawFromDAO]: {
+      name: 'Withdraw from DAO',
+      packageId: PackageEnum.Common,
+    },
     [Instructions.Mint]: {
       name: 'Mint Tokens',
       isVisible: canUseMintInstruction,
@@ -449,6 +460,11 @@ export default function useGovernanceAssets() {
       name: 'Join a VSR DAO',
       isVisible: canUseTransferInstruction,
       packageId: PackageEnum.Common,
+    },
+    [Instructions.TokenWithdrawFees]: {
+      name: 'Token 2022 withdraw fees',
+      packageId: PackageEnum.Common,
+      isVisible: canUseTransferInstruction,
     },
     /*
       ██████  ██    ██  █████  ██          ███████ ██ ███    ██  █████  ███    ██  ██████ ███████
@@ -667,7 +683,21 @@ export default function useGovernanceAssets() {
       ██  ██  ██ ██      ██   ██ ██  ██ ██     ██      ██ ██  ██ ██ ██   ██ ██  ██ ██ ██      ██
       ██      ██ ███████ ██   ██ ██   ████     ██      ██ ██   ████ ██   ██ ██   ████  ██████ ███████
     */
-
+    [Instructions.PlaceLimitOrder]: {
+      name: 'Place limit order',
+      packageId: PackageEnum.Manifest,
+      isVisible: canUseAnyInstruction,
+    },
+    [Instructions.SettleToken]: {
+      name: 'Settle Token',
+      packageId: PackageEnum.Manifest,
+      isVisible: canUseAnyInstruction,
+    },
+    [Instructions.CancelLimitOrder]: {
+      name: 'Cancel limit order',
+      packageId: PackageEnum.Manifest,
+      isVisible: canUseAnyInstruction,
+    },
     [Instructions.MeanCreateAccount]: {
       name: 'Payment Stream: New account',
       packageId: PackageEnum.MeanFinance,
@@ -841,6 +871,18 @@ export default function useGovernanceAssets() {
       name: 'Mesh Remove Member',
       packageId: PackageEnum.Squads,
     },
+    [Instructions.SquadsV4AddMember]: {
+      name: 'SquadsV4 Add Member',
+      packageId: PackageEnum.Squads,
+    },
+    [Instructions.SquadsV4ChangeThresholdMember]: {
+      name: 'SquadsV4 Change Threshold',
+      packageId: PackageEnum.Squads,
+    },
+    [Instructions.SquadsV4RemoveMember]: {
+      name: 'SquadsV4 Remove Member',
+      packageId: PackageEnum.Squads,
+    },
     /*
       ███████ ██     ██ ██ ████████  ██████ ██   ██ ██████   ██████   █████  ██████  ██████
       ██      ██     ██ ██    ██    ██      ██   ██ ██   ██ ██    ██ ██   ██ ██   ██ ██   ██
@@ -858,6 +900,22 @@ export default function useGovernanceAssets() {
       packageId: PackageEnum.Switchboard,
     },
 
+    /*
+      ____                 _ _                 
+      |  _ \ __ _ _   _  __| (_)_   _ _ __ ___  
+      | |_) / _` | | | |/ _` | | | | | '_ ` _ \ 
+      |  _ < (_| | |_| | (_| | | |_| | | | | | |
+      |_| \_\__,_|\__, |\__,_|_|\__,_|_| |_| |_|
+                  |___/                         
+    */
+    [Instructions.CollectPoolFees]: {
+      name: 'Collect Pool Fees (CPMM)',
+      packageId: PackageEnum.Raydium,
+    },
+    [Instructions.CollectVestedTokens]: {
+      name: 'Collect Vested Tokens',
+      packageId: PackageEnum.Raydium,
+    },
     /*
       ██    ██ ███████ ██████      ██████  ██      ██    ██  ██████  ██ ███    ██
       ██    ██ ██      ██   ██     ██   ██ ██      ██    ██ ██       ██ ████   ██

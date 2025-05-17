@@ -11,17 +11,28 @@ import {
   Web3Context,
 } from '@tools/governance/prepareRealmCreation'
 import { trySentryLog } from '@utils/logs'
-import { Wallet } from '@coral-xyz/anchor'
+import { BN, Wallet } from '@coral-xyz/anchor'
 import {
   SetRealmAuthorityAction,
   withSetRealmAuthority,
 } from '@solana/spl-governance'
 import { PluginName, pluginNameToCanonicalProgramId } from '@constants/plugins'
-import { Keypair, PublicKey, TransactionInstruction } from '@solana/web3.js'
+import {
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+} from '@solana/web3.js'
 import { addQVPlugin } from './addPlugins/addQVPlugin'
 import { defaultSybilResistancePass } from '../GatewayPlugin/config'
 import { addGatewayPlugin } from './addPlugins/addGatewayPlugin'
 import { Coefficients } from '@solana/governance-program-library'
+import { addTokenVoterPlugin } from './addPlugins/addTokenVoterPlugin'
+import {
+  lamportsToSol,
+  solToLamports,
+} from '@marinade.finance/marinade-ts-sdk/dist/src/util'
+import { FEE_WALLET } from '@utils/orders'
 
 type CreateWithPlugin = {
   pluginList: PluginName[]
@@ -54,6 +65,10 @@ export default async function createTokenizedRealm({
     voterWeightAddin,
   }
 
+  if (pluginList.includes('token_voter') && !params.existingCommunityMintPk) {
+    throw new Error('It is mandatory to provide community mint public key.')
+  }
+
   const {
     communityMintPk,
     councilMintPk,
@@ -72,7 +87,13 @@ export default async function createTokenizedRealm({
     wallet,
     ...params,
     communityTokenConfig,
+    pluginList,
   })
+
+  const solBalance = await connection.getBalance(wallet.publicKey!)
+  if (lamportsToSol(new BN(solBalance)) < 0.25) {
+    throw new Error('You need to have at least 0.25 SOL to create a realm')
+  }
 
   try {
     const councilMembersChunks = chunks(councilMembersInstructions, 10)
@@ -127,6 +148,19 @@ export default async function createTokenizedRealm({
       predecessorProgramId = pluginProgramId
     }
 
+    if (pluginList.includes('token_voter')) {
+      const { instructions } = await addTokenVoterPlugin(
+        connection,
+        wallet as Wallet,
+        realmPk,
+        communityMintPk,
+        programIdPk,
+        params.existingCommunityMintPk!,
+      )
+
+      pluginIxes.push(...instructions)
+    }
+
     if (pluginIxes.length > 0) {
       // finally, transfer the realm authority to the Realm PDA
       // Set the community governance as the realm authority
@@ -153,6 +187,13 @@ export default async function createTokenizedRealm({
       ...councilMembersChunks,
       realmInstructions,
       pluginIxes,
+      [
+        SystemProgram.transfer({
+          fromPubkey: walletPk,
+          toPubkey: FEE_WALLET,
+          lamports: solToLamports(0.2).toNumber(),
+        }),
+      ],
     ].map((ixBatch, batchIdx) => ({
       instructionsSet: txBatchesToInstructionSetWithSigners(
         ixBatch,

@@ -4,8 +4,13 @@ import {
   withCreateTokenOwnerRecord,
   withSetRealmAuthority,
 } from '@solana/spl-governance'
-import { Keypair, PublicKey, TransactionInstruction } from '@solana/web3.js'
-import { AnchorProvider, Wallet } from '@coral-xyz/anchor'
+import {
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+} from '@solana/web3.js'
+import { AnchorProvider, BN, Wallet } from '@coral-xyz/anchor'
 import {
   SequenceType,
   sendTransactionsV3,
@@ -25,6 +30,11 @@ import {
 } from '@tools/governance/prepareRealmCreation'
 import { trySentryLog } from '@utils/logs'
 import { NftVoterClient } from '@utils/uiTypes/NftVoterClient'
+import { FEE_WALLET } from '@utils/orders'
+import {
+  lamportsToSol,
+  solToLamports,
+} from '@marinade.finance/marinade-ts-sdk/dist/src/util'
 
 type NFTRealm = Web3Context &
   RealmCreation & {
@@ -64,6 +74,10 @@ export default async function createNFTRealm({
     connection,
     wallet,
   })
+  const solBalance = await connection.getBalance(wallet.publicKey!)
+  if (lamportsToSol(new BN(solBalance)) < 0.25) {
+    throw new Error('You need to have at least 0.25 SOL to create a realm')
+  }
 
   console.log('NFT REALM realm public-key', realmPk.toBase58())
   const { registrar } = getRegistrarPDA(
@@ -203,6 +217,13 @@ export default async function createNFTRealm({
       ...councilMembersChunks,
       realmInstructions,
       nftConfigurationInstructions,
+      [
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey!,
+          toPubkey: FEE_WALLET,
+          lamports: solToLamports(0.2).toNumber(),
+        }),
+      ],
     ].map((txBatch, batchIdx) => {
       return {
         instructionsSet: txBatchesToInstructionSetWithSigners(
