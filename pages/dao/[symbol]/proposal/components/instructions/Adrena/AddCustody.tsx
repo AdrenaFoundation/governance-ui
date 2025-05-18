@@ -13,7 +13,7 @@ import { AccountType, AssetAccount } from '@utils/uiTypes/assets'
 import useAdrenaClient from '@hooks/useAdrenaClient'
 import { PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import { BN } from '@coral-xyz/anchor'
-import { PoolWithPubkey } from '@tools/sdk/adrena/Adrena'
+import AdrenaClient, { PoolWithPubkey } from '@tools/sdk/adrena/Adrena'
 import useAdrenaPools from '@hooks/useAdrenaPools'
 import useWalletOnePointOh from '@hooks/useWalletOnePointOh'
 import {
@@ -165,6 +165,8 @@ export default function AddCustody({
           max: form[`ratio${i + 1}Max`] as number,
           padding: [0, 0],
         })),
+        oracle: AdrenaClient.toLimitedStringBuffer(form.custodyOracle),
+        tradeOracle: AdrenaClient.toLimitedStringBuffer(form.custodyTradeOracle)
       })
       .accountsStrict({
         admin: governance.nativeTreasuryAddress,
@@ -174,8 +176,7 @@ export default function AddCustody({
         payer: wallet.publicKey,
         transferAuthority: adrenaClient.transferAuthorityPda,
         custodyTokenAccount: custodyTokenAccountPda,
-        custodyOracle: new PublicKey(form.custodyOracle),
-        custodyTradeOracle: new PublicKey(form.custodyTradeOracle),
+        oracle: adrenaClient.oraclePda,
         custodyTokenMint: mint,
         systemProgram: SYSTEM_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,

@@ -13,7 +13,7 @@ import { AccountType, AssetAccount } from '@utils/uiTypes/assets'
 import useAdrenaClient from '@hooks/useAdrenaClient'
 import { PublicKey } from '@solana/web3.js'
 import { BN } from '@coral-xyz/anchor'
-import { CustodyWithPubkey, PoolWithPubkey } from '@tools/sdk/adrena/Adrena'
+import AdrenaClient, { CustodyWithPubkey, PoolWithPubkey } from '@tools/sdk/adrena/Adrena'
 import useAdrenaPools from '@hooks/useAdrenaPools'
 import useWalletOnePointOh from '@hooks/useWalletOnePointOh'
 import useAdrenaCustodies from '@hooks/useAdrenaCustodies'
@@ -125,8 +125,8 @@ export default function AddCustody({
     const instruction = await adrenaClient.program.methods
       .setCustodyConfig({
         isStable: form.isStable,
-        oracle: new PublicKey(form.custodyOracle),
-        tradeOracle: new PublicKey(form.custodyTradeOracle),
+        oracle: AdrenaClient.toLimitedStringBuffer(form.custodyOracle),
+        tradeOracle: AdrenaClient.toLimitedStringBuffer(form.custodyTradeOracle),
         pricing: {
           maxInitialLeverage: form.maxInitialLeverage,
           maxLeverage: form.maxLeverage,
@@ -237,14 +237,14 @@ export default function AddCustody({
       ...base,
       {
         label: 'Custody Oracle',
-        initialValue: custody.oracle.toBase58(),
+        initialValue: AdrenaClient.limitedStringToString(custody.oracle),
         type: InstructionInputType.INPUT,
         name: 'custodyOracle',
         inputType: 'string',
       },
       {
         label: 'Custody Trade Oracle',
-        initialValue: custody.tradeOracle.toBase58(),
+        initialValue: AdrenaClient.limitedStringToString(custody.tradeOracle),
         type: InstructionInputType.INPUT,
         name: 'custodyTradeOracle',
         inputType: 'string',

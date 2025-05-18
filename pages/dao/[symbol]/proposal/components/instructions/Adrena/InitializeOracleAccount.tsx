@@ -14,6 +14,7 @@ import useAdrenaClient from '@hooks/useAdrenaClient'
 import { SystemProgram } from '@solana/web3.js'
 import useWalletOnePointOh from '@hooks/useWalletOnePointOh'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import AdrenaClient from '@tools/sdk/adrena/Adrena'
 
 export interface InitializeOracleAccountForm {
   governedAccount: AssetAccount | null
@@ -67,22 +68,22 @@ export default function InitializeOracleAccount({
     const instruction = await adrenaClient.program.methods
       .initOracle({
         oraclePrices: [{
-          name: adrenaClient.toLimitedStringBuffer('SOLUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('SOLUSD'),
           chaosLabsFeedId: 0,
         }, {
-          name: adrenaClient.toLimitedStringBuffer('JITOSOLUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('JITOSOLUSD'),
           chaosLabsFeedId: 1,
         }, {
-          name: adrenaClient.toLimitedStringBuffer('BTCUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('BTCUSD'),
           chaosLabsFeedId: 2,
         }, {
-          name: adrenaClient.toLimitedStringBuffer('WBTCUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('WBTCUSD'),
           chaosLabsFeedId: 3,
         }, {
-          name: adrenaClient.toLimitedStringBuffer('BONKUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('BONKUSD'),
           chaosLabsFeedId: 4,
         }, {
-          name: adrenaClient.toLimitedStringBuffer('USDCUSD'),
+          name: AdrenaClient.toLimitedStringBuffer('USDCUSD'),
           chaosLabsFeedId: 5,
         }]
       })

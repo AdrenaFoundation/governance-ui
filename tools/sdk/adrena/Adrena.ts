@@ -192,7 +192,7 @@ export default class AdrenaClient {
     }))
   }
 
-  public toLimitedStringBuffer(str: string): LimitedString {
+  public static toLimitedStringBuffer(str: string): LimitedString {
     const buffer = new Uint8Array(31);
     const ob = Buffer.from(str, 'utf-8');
 
@@ -203,5 +203,10 @@ export default class AdrenaClient {
       value: Array.from(buffer).map(x => Number(x)),
       length: ob.length,
     };
+  }
+
+  public static limitedStringToString(limitedString: LimitedString): string {
+    const buffer = Buffer.from(limitedString.value.slice(0, limitedString.length));
+    return buffer.toString('utf-8');
   }
 }
