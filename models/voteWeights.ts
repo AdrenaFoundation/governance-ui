@@ -11,6 +11,7 @@ import {
 } from '@solana/spl-governance'
 import { ProgramAccount } from '@solana/spl-governance'
 import { PublicKey } from '@solana/web3.js'
+import { ProposalState } from '@realms-today/spl-governance'
 
 interface VoterWeightInterface {
   votingPower?: BN
@@ -504,8 +505,10 @@ export function getProposalMaxVoteWeight(
   // For vetos we want to override the proposal.governingTokenMint
   governingTokenMintPk?: PublicKey,
 ) {
+  const isVetoed = proposal.state === ProposalState.Vetoed
+
   // For finalized proposals the max is stored on the proposal in case it can change in the future
-  if (proposal.isVoteFinalized() && proposal.maxVoteWeight) {
+  if (proposal.isVoteFinalized() && proposal.maxVoteWeight && !isVetoed) {
     return proposal.maxVoteWeight
   }
 

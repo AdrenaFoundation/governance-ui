@@ -1,19 +1,13 @@
 import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
-import { AccountMetaData, SYSTEM_PROGRAM_ID } from '@solana/spl-governance'
-import { tryGetMint, tryGetTokenAccount } from '../../../utils/tokens'
-import BN from 'bn.js'
-import { getMintDecimalAmountFromNatural } from '@tools/sdk/units'
+import { AccountMetaData } from '@solana/spl-governance'
+import { tryGetMint } from '../../../utils/tokens'
 import tokenPriceService from '@utils/services/tokenPrice'
-import { TokenInstruction } from '@solendprotocol/solend-sdk/dist/instructions/instruction'
-import { AuthorityType } from '@solana/spl-token'
-import { struct, u8 } from 'buffer-layout'
-import { publicKey } from '@coral-xyz/borsh'
 import {
   decodeTransferCheckedInstruction,
   TOKEN_2022_PROGRAM_ID,
 } from '@solana/spl-token-new'
-import { Transaction } from '@sentry/nextjs'
 import { toUiDecimals } from '@blockworks-foundation/mango-v4'
+import HarvestTokenPanel from '@components/Token2022/HarvestTokensPanel'
 
 interface TokenMintMetadata {
   name: string
@@ -92,6 +86,21 @@ export const TOKEN_2022_INST = {
             )}
           </>
         )
+      },
+    },
+    26: {
+      name: 'Token: Withdraw Fees From Mint',
+      accounts: [
+        { name: 'Mint' },
+        { name: 'Destination' },
+        { name: 'Authority' },
+      ],
+      getDataUI: async (
+        connection: Connection,
+        data: Uint8Array,
+        accounts: AccountMetaData[],
+      ) => {
+        return <HarvestTokenPanel mint={accounts[0].pubkey}></HarvestTokenPanel>
       },
     },
   },

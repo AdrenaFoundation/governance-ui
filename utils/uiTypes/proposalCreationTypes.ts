@@ -9,6 +9,7 @@ import { LockupKind } from 'VoteStakeRegistry/tools/types'
 import { AssetAccount, StakeAccount } from '@utils/uiTypes/assets'
 import { RealmInfo } from '@models/registry/api'
 import * as PaymentStreaming from '@mean-dao/payment-streaming'
+import { DasNftObject } from '@hooks/queries/digitalAssets'
 
 // Alphabetical order
 export enum PackageEnum {
@@ -26,14 +27,22 @@ export enum PackageEnum {
   Serum,
   Solend,
   Symmetry,
+  Manifest,
   Squads,
   Switchboard,
   VsrPlugin,
+  Raydium
 }
 
 export interface UiInstruction {
   serializedInstruction: string
-  additionalSerializedInstructions?: string[]
+  additionalSerializedInstructions?: (
+    | string
+    | {
+        serializedInstruction: string
+        holdUpTime: number
+      }
+  )[]
   isValid: boolean
   governance: ProgramAccount<Governance> | undefined
   customHoldUpTime?: number
@@ -296,6 +305,13 @@ export interface JoinDAOForm {
   amount?: number
 }
 
+export interface WithdrawDAOForm {
+  governedAccount?: AssetAccount
+  mintInfo: MintInfo | undefined
+  realm: string
+  amount?: number
+}
+
 export enum Instructions {
   AdrenaMintLmTokensFromBucket,
   AdrenaSetCustodyAllowSwap,
@@ -313,6 +329,8 @@ export enum Instructions {
   AdrenaSetProtocolFeeRecipient,
   AdrenaAddCustody,
   AdrenaSetCustodyConfig,
+  AdrenaInitializeOracleAccount,
+  AdrenaPatchCustodiesOracles,
   Base64,
   Burn,
   ChangeMakeDonation,
@@ -347,6 +365,9 @@ export enum Instructions {
   DistributionFillVaults,
   DelegateStake,
   RemoveStakeLock,
+  PlaceLimitOrder,
+  SettleToken,
+  CancelLimitOrder,
   Grant,
   InitSolendObligationAccount,
   JoinDAO,
@@ -392,6 +413,9 @@ export enum Instructions {
   SquadsMeshAddMember,
   SquadsMeshChangeThresholdMember,
   SquadsMeshRemoveMember,
+  SquadsV4AddMember,
+  SquadsV4ChangeThresholdMember,
+  SquadsV4RemoveMember,
   PythRecoverAccount,
   PythUpdatePoolAuthority,
   StakeValidator,
@@ -403,6 +427,7 @@ export enum Instructions {
   VotingMintConfig,
   WithdrawObligationCollateralAndRedeemReserveLiquidity,
   WithdrawValidatorStake,
+  WithdrawFromDAO,
   SplitStake,
   AddKeyToDID,
   RemoveKeyFromDID,
@@ -416,6 +441,9 @@ export enum Instructions {
   SymmetryEditBasket,
   SymmetryDeposit,
   SymmetryWithdraw,
+  TokenWithdrawFees,
+  CollectPoolFees,
+  CollectVestedTokens
 }
 
 export interface ComponentInstructionData {

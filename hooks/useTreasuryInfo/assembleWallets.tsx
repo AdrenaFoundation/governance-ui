@@ -41,6 +41,8 @@ import {
   toUiDecimals,
 } from '@blockworks-foundation/mango-v4'
 import { BN } from '@coral-xyz/anchor'
+import { getFavoriteDomain } from '@bonfida/spl-name-service'
+import { Position } from '@hub/providers/Defi'
 
 function isNotNull<T>(x: T | null): x is T {
   return x !== null
@@ -116,6 +118,7 @@ export const assembleWallets = async (
   realm?: ProgramAccount<Realm>,
   realmConfig?: ProgramAccount<RealmConfigAccount>,
   realmInfo?: RealmInfo,
+  positions?: Position[],
 ) => {
   const walletMap: { [address: string]: Wallet } = {}
   const programs = accounts.filter(
@@ -245,11 +248,17 @@ export const assembleWallets = async (
       }
     }
 
+    // Add isFavorite property to each domain using the already fetched favoriteDomain to figure out if the domain is the favorite domain
+    const domainsWithFavorite = domainList.map((domain) => ({
+      ...domain,
+      isFavorite: domain.name === walletMap[walletAddress].favoriteDomain?.name,
+    }))
+
     walletMap[walletAddress].assets.unshift({
       type: AssetType.Domain,
       id: 'domain-list',
       count: new BigNumber(domainList.length),
-      list: domainList,
+      list: domainsWithFavorite,
     })
   }
 
@@ -269,8 +278,31 @@ export const assembleWallets = async (
       })
     }
 
+    const defiPositionsValue =
+      positions?.reduce(
+        (acc, position) =>
+          position.walletAddress === wallet.address
+            ? acc.plus(position.value)
+            : acc,
+        new BigNumber(0),
+      ) ?? new BigNumber(0)
+
+    // Fetch favorite domain when creating a new wallet
+    const favoriteDomainResponse = await getFavoriteDomain(
+      connection.current,
+      new PublicKey(wallet.address),
+    ).catch(() => null)
+    
+    const favoriteDomain = favoriteDomainResponse
+      ? {
+          name: favoriteDomainResponse?.reverse,
+          address: new PublicKey(favoriteDomainResponse?.domain),
+        }
+      : null
+
     allWallets.push({
       ...wallet,
+      favoriteDomain,
       name: wallet.governanceAddress
         ? getAccountName(wallet.governanceAddress)
         : getAccountName(wallet.address),
@@ -278,7 +310,7 @@ export const assembleWallets = async (
         wallet.assets.map((asset) =>
           'value' in asset ? asset.value : new BigNumber(0),
         ),
-      ),
+      ).plus(defiPositionsValue),
     })
   }
 

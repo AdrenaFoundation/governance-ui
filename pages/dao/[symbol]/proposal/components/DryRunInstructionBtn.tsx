@@ -45,6 +45,7 @@ const DryRunInstructionBtn = ({
       }
       setIsPending(true)
       const instructionData = await getInstructionDataFcn()
+      console.log(instructionData)
       const prerequisiteInstructionsToRun =
         instructionData.prerequisiteInstructions
       const additionalInstructions =
@@ -60,7 +61,11 @@ const DryRunInstructionBtn = ({
           ? getInstructionDataFromBase64(instructionData?.serializedInstruction)
           : null,
         prerequisiteInstructionsToRun,
-        additionalInstructions?.map((x) => getInstructionDataFromBase64(x)),
+        additionalInstructions?.map((x) =>
+          getInstructionDataFromBase64(
+            typeof x === 'string' ? x : x.serializedInstruction,
+          ),
+        ),
       )
       setResult(result)
       setIsOpen(true)

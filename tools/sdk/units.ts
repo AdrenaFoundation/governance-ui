@@ -1,6 +1,6 @@
 import { BN, ProgramAccount } from '@coral-xyz/anchor'
 import { MintInfo } from '@solana/spl-token'
-import { TokenInfoWithoutDecimals } from '@utils/services/tokenPrice'
+import { TokenInfoJupiter } from '@utils/services/tokenPrice'
 import { BigNumber } from 'bignumber.js'
 
 const SECONDS_PER_DAY = 86400
@@ -15,6 +15,11 @@ export function getHoursFromTimestamp(unixTimestamp: number) {
 
 export function getTimestampFromDays(days: number) {
   return days * SECONDS_PER_DAY
+}
+
+export function getTimestampFromMinutes(minutes: number) {
+  //seconds in minute
+  return minutes * 60
 }
 
 export function getTimestampFromHours(hours: number) {
@@ -46,7 +51,7 @@ export function fmtMintAmount(mint: MintInfo | undefined, mintAmount: BN) {
 export function fmtTokenInfoWithMint(
   amount: BN,
   mintInfo: ProgramAccount<MintInfo>,
-  tokenInfo: TokenInfoWithoutDecimals | undefined = undefined,
+  tokenInfo: TokenInfoJupiter | undefined = undefined,
 ) {
   return `${fmtBnMintDecimals(amount, mintInfo.account.decimals)} ${
     tokenInfo?.symbol
@@ -56,7 +61,9 @@ export function fmtTokenInfoWithMint(
 }
 
 // Converts mint amount (natural units) to decimals
-export function getMintDecimalAmount(mint: MintInfo, mintAmount: BN) {
+export function getMintDecimalAmount(mint: {
+  decimals: number
+}, mintAmount: BN) {
   return new BigNumber(mintAmount.toString()).shiftedBy(-mint.decimals)
 }
 function getBigNumberAmount(amount: BN | number) {
@@ -109,7 +116,9 @@ export function getMintNaturalAmountFromDecimalAsBN(
 }
 
 // Calculates mint min amount as decimal
-export function getMintMinAmountAsDecimal(mint: MintInfo) {
+export function getMintMinAmountAsDecimal(mint: {
+  decimals: number
+}) {
   return new BigNumber(1).shiftedBy(-mint.decimals).toNumber()
 }
 
@@ -121,7 +130,9 @@ export function formatMintNaturalAmountAsDecimal(
 }
 
 export function getMintDecimalAmountFromNatural(
-  mint: MintInfo,
+  mint: {
+    decimals: number,
+  },
   naturalAmount: BN,
 ) {
   return new BigNumber(naturalAmount.toString()).shiftedBy(-mint.decimals)

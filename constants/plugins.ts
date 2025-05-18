@@ -11,6 +11,9 @@ export const VSR_PLUGIN_PKS: string[] = [
   'VoteMBhDCqGLRgYpp9o7DGyq81KNmwjXQRAHStjtJsS',
   '5sWzuuYkeWLBdAv3ULrBfqA51zF7Y4rnVzereboNDCPn',
   'HBZ5oXbFBFbr8Krt2oMU7ApHFeukdRS8Rye1f3T66vg5',
+  '4Q6WW2ouZ6V3iaNm56MTd5n2tnTm4C5fiH8miFHnAFHo',
+  'vsRJM68m7i18PwzTFphgPYXTujCgxEi28knpUwSmg3q',
+  '9SJqwCQ5AJkFtC7zxfFsF6Y5dm22XzN3JEhn3N14v23t'
 ]
 
 export const HELIUM_VSR_PLUGINS_PKS: string[] = [
@@ -106,6 +109,8 @@ export const pluginNameToCanonicalProgramId = (
       return lastPk(QV_PLUGINS_PKS)
     case 'pyth':
       return lastPk(PYTH_PLUGIN_PK)
+    case 'token_voter':
+      return lastPk(TOKEN_VOTER_PK)
     default:
       return undefined
   }

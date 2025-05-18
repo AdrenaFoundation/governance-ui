@@ -119,6 +119,48 @@ export const GOVERNANCE_INSTRUCTIONS = {
         )
       },
     },
+    2: {
+      name: 'Withdraw Governing Tokens',
+      accounts: [
+        { name: 'Realm' },
+        { name: 'Governing Token Destination' },
+        { name: 'Governing Token Owner' },
+        { name: 'Token Owner Record Address' },
+      ],
+      getDataUI: async (
+        connection: Connection,
+        data: Uint8Array,
+        accounts: AccountMetaData[],
+      ) => {
+        return (
+          <>
+            <p>Withdraw full amount</p>
+          </>
+        )
+      },
+    },
+    15: {
+      name: 'Relinquish vote',
+      accounts: [
+        { name: 'Realm' },
+        { name: 'Governance' },
+        { name: 'Proposal' },
+        { name: 'Token Owner Record' },
+        { name: 'Vote Record' },
+        { name: 'Mint' },
+      ],
+      getDataUI: async (
+        connection: Connection,
+        data: Uint8Array,
+        accounts: AccountMetaData[],
+      ) => {
+        return (
+          <>
+            <p>Relinquish finalized vote</p>
+          </>
+        )
+      },
+    },
     19: {
       name: 'Set Governance Config',
       accounts: [{ name: 'Governance' }],
