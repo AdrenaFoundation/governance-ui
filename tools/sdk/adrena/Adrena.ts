@@ -45,6 +45,8 @@ export default class AdrenaClient {
     'GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw'
   )
 
+  public static readonly mplTokenMetadataProgram =  new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
+
   public readonly cortexPda: PublicKey = PublicKey.findProgramAddressSync(
     [Buffer.from('cortex')],
     this.programId
@@ -84,9 +86,24 @@ export default class AdrenaClient {
     )[0]
   }
 
+
   public readonly lmTokenMint = PublicKey.findProgramAddressSync(
     [Buffer.from('lm_token_mint')],
     this.programId
+  )[0]
+  
+  public readonly lmTokenTreasury = PublicKey.findProgramAddressSync(
+    [Buffer.from('lm_token_treasury'), this.lmTokenMint.toBuffer()],
+    this.programId,
+  )[0]
+
+  public lmTokenMintMetadata = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("metadata"),
+      AdrenaClient.mplTokenMetadataProgram.toBuffer(),
+      this.lmTokenMint.toBuffer(),
+    ],
+    AdrenaClient.mplTokenMetadataProgram
   )[0]
 
   public readonly vestRegistryPda = PublicKey.findProgramAddressSync(
