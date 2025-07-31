@@ -196,9 +196,14 @@ export const GovernanceTokenSwap = () => {
   const realm = useRealmQuery().data?.result
   const realmAccount = realm?.account
   const communityMint = realmAccount?.communityMint.toBase58()
-  const tokenInfo = tokenPriceService._tokenList.find(
+  let tokenInfo = tokenPriceService._tokenList.find(
     (x) => x.address === communityMint,
   )
+
+  if (communityMint === 'ELPrcU7qRV3DUz8AP6siTE7GkR3gkkBvGmgBRiLnC19Y') {
+    //@ts-ignore
+    tokenInfo = { symbol: 'SFM' }
+  }
 
   return communityMint && tokenInfo ? (
     <div className="flex items-center justify-end py-2">
@@ -206,7 +211,7 @@ export const GovernanceTokenSwap = () => {
         className="relative -bottom-[18px] -right-[15px] rounded-none border-0"
         onClick={() => {
           window.open(
-            `https://cabana.exchange/swap/${USDC_MINT.toBase58()}-${communityMint.toString()}?daoRef=realms`,
+            `https://cabana.exchange/swap/${USDC_MINT.toBase58()}-${communityMint.toString()}?partner=realms`,
             '_blank',
           )
         }}

@@ -248,6 +248,8 @@ const MyProposalsBn = () => {
       const governanceAuthority = wallet!.publicKey!
       const beneficiary = wallet!.publicKey!
 
+      if (!voterTokenRecord) return
+
       let voteRecordPk = await getVoteRecordAddress(
         realm!.owner,
         proposal.pubkey,

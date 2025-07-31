@@ -7,7 +7,7 @@ import {
   Web3Context,
 } from '@tools/governance/prepareRealmCreation'
 import { trySentryLog } from '@utils/logs'
-import { SystemProgram } from '@solana/web3.js'
+import { ComputeBudgetProgram, SystemProgram } from '@solana/web3.js'
 import { FEE_WALLET } from '@utils/orders'
 import {
   lamportsToSol,
@@ -40,14 +40,17 @@ export default async function createMultisigWallet({
     ...params,
   })
   const solBalance = await connection.getBalance(wallet.publicKey!)
-  if (lamportsToSol(new BN(solBalance)) < 0.25) {
-    throw new Error('You need to have at least 0.25 SOL to create a realm')
+  if (lamportsToSol(new BN(solBalance)) < 1.05) {
+    throw new Error('You need to have at least 1.05 SOL to create a realm')
   }
 
   try {
     const councilMembersChunks = chunks(councilMembersInstructions, 8)
 
     const allSigners = [...mintsSetupSigners, ...realmSigners]
+
+    const cuLimtIx = ComputeBudgetProgram.setComputeUnitLimit({ units: 800_000})
+    realmInstructions.unshift(cuLimtIx)
 
     const txes = [
       ...chunks(mintsSetupInstructions, 5),
@@ -57,7 +60,7 @@ export default async function createMultisigWallet({
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey!,
           toPubkey: FEE_WALLET,
-          lamports: solToLamports(0.2).toNumber(),
+          lamports: solToLamports(1).toNumber(),
         }),
       ],
     ].map((txBatch) => {

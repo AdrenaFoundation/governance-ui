@@ -312,6 +312,13 @@ export interface WithdrawDAOForm {
   amount?: number
 }
 
+export interface RelinquishDaoVoteForm {
+  governedAccount?: AssetAccount
+  mintInfo: MintInfo | undefined
+  realm: string
+  proposal: string
+}
+
 export enum Instructions {
   AdrenaMintLmTokensFromBucket,
   AdrenaSetCustodyAllowSwap,
@@ -359,6 +366,7 @@ export enum Instructions {
   DualFinanceStakingOptionWithdraw,
   DualFinanceDelegate,
   DualFinanceDelegateWithdraw,
+  RelinquishDaoVote,
   DualFinanceVoteDeposit,
   DaoVote,
   DistributionCloseVaults,
@@ -418,6 +426,7 @@ export enum Instructions {
   SquadsV4RemoveMember,
   PythRecoverAccount,
   PythUpdatePoolAuthority,
+  PythTransferAccount,
   StakeValidator,
   SwitchboardFundOracle,
   WithdrawFromOracle,
