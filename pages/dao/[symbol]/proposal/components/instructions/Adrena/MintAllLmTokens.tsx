@@ -58,6 +58,13 @@ export default function MintAllLmTokens({
     const governance = form.governedAccount?.governance
 
     if (!isValid || !governance || !adrenaClient || !wallet?.publicKey) {
+
+      console.log('ERROR BUILDING')
+      console.log('isValid', isValid);
+      console.log('governance', governance)
+      console.log('adrenaClient', adrenaClient)
+      console.log('wallet?.publicKey', wallet?.publicKey);
+
       return {
         serializedInstruction: '',
         isValid,
@@ -85,6 +92,8 @@ export default function MintAllLmTokens({
       })
       .instruction()
 
+    console.log('MintAllLmTokens instruction', instruction)
+
     return {
       serializedInstruction: serializeInstructionToBase64(instruction),
       isValid,
@@ -99,14 +108,13 @@ export default function MintAllLmTokens({
       index
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree
-  }, [form])
+  }, [form, governance, adrenaClient, wallet?.publicKey])
 
   const schema = yup.object().shape({
     governedAccount: yup
       .object()
       .nullable()
       .required('Program governed account is required'),
-    allow: yup.boolean().required('Allow is required'),
   })
 
   const inputs: InstructionInput[] = [
