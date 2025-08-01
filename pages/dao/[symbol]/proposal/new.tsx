@@ -60,6 +60,7 @@ import StakeValidator from './components/instructions/Validators/StakeValidator'
 import SanctumDepositStake from './components/instructions/Validators/SanctumDepositStake'
 import SanctumWithdrawStake from './components/instructions/Validators/SanctumWithdrawStake'
 import AdrenaMintLmTokensFromBucket from './components/instructions/Adrena/MintLmTokensFromBucket'
+import AdrenaMintAllLmTokens from './components/instructions/Adrena/MintAllLmTokens'
 import AdrenaSetCustodyAllowSwap from './components/instructions/Adrena/SetCustodyAllowSwap'
 import AdrenaSetCustodyAllowTrade from './components/instructions/Adrena/SetCustodyAllowTrade'
 import AdrenaSetCustodyMaxCumulativeShortSizeUsd from './components/instructions/Adrena/SetCustodyMaxCumulativeShortSizeUsd'
@@ -501,6 +502,7 @@ const New = () => {
   } = useMemo(
     () => ({
       [Instructions.AdrenaMintLmTokensFromBucket]: AdrenaMintLmTokensFromBucket,
+      [Instructions.AdrenaMintAllLmTokens]: AdrenaMintAllLmTokens,
       [Instructions.AdrenaSetCustodyAllowSwap]: AdrenaSetCustodyAllowSwap,
       [Instructions.AdrenaSetCustodyAllowTrade]: AdrenaSetCustodyAllowTrade,
       [Instructions.AdrenaSetCustodyMaxCumulativeShortSizeUsd]: AdrenaSetCustodyMaxCumulativeShortSizeUsd,

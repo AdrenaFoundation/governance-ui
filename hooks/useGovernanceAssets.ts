@@ -240,6 +240,10 @@ export default function useGovernanceAssets() {
       name: 'Mint LM Tokens from Bucket',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaMintAllLmTokens]: {
+      name: 'Mint All Lm Tokens',
+      packageId: PackageEnum.Adrena,
+    },
     [Instructions.AdrenaSetCustodyAllowSwap]: {
       name: 'Set Custody Allow Swap',
       packageId: PackageEnum.Adrena,

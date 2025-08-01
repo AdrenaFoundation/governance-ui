@@ -321,6 +321,7 @@ export interface RelinquishDaoVoteForm {
 
 export enum Instructions {
   AdrenaMintLmTokensFromBucket,
+  AdrenaMintAllLmTokens,
   AdrenaSetCustodyAllowSwap,
   AdrenaSetCustodyAllowTrade,
   AdrenaSetCustodyMaxCumulativeShortSizeUsd,
