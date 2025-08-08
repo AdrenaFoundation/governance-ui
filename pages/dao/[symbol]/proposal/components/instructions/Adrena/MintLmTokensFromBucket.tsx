@@ -115,7 +115,7 @@ export default function MintLmTokensFromBucket({
         receivingAccount,
         transferAuthority: adrenaClient.transferAuthorityPda,
         cortex: adrenaClient.cortexPda,
-        lmTokenMint: adrenaClient.lmTokenMint,
+        lmTokenTreasury: adrenaClient.lmTokenTreasury,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction()
