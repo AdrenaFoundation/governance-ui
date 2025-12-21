@@ -339,6 +339,8 @@ export enum Instructions {
   AdrenaSetCustodyConfig,
   AdrenaInitializeOracleAccount,
   AdrenaPatchCustodiesOracles,
+  AdrenaAddVest,
+  AdrenaCancelVest,
   Base64,
   Burn,
   ChangeMakeDonation,

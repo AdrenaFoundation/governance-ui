@@ -312,6 +312,14 @@ export default function useGovernanceAssets() {
       name: 'Set Custody Config',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaAddVest]: {
+      name: 'Add Vest',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaCancelVest]: {
+      name: 'Cancel Vest',
+      packageId: PackageEnum.Adrena,
+    },
 
     /*
         ██████  ██████  ███    ███ ███    ███  ██████  ███    ██

@@ -78,6 +78,8 @@ import AdrenaPatchCustodiesOracles from './components/instructions/Adrena/PatchC
 import AdrenaGenesisOtcOut from './components/instructions/Adrena/GenesisOtcOut'
 import AdrenaAddCustody from './components/instructions/Adrena/AddCustody'
 import AdrenaSetCustodyConfig from './components/instructions/Adrena/SetCustodyConfig'
+import AdrenaAddVest from './components/instructions/Adrena/AddVest'
+import AdrenaAddVest from './components/instructions/Adrena/CancelVest'
 import DeactivateValidatorStake from './components/instructions/Validators/DeactivateStake'
 import WithdrawValidatorStake from './components/instructions/Validators/WithdrawStake'
 import DelegateStake from './components/instructions/Validators/DelegateStake'
@@ -520,6 +522,8 @@ const New = () => {
       [Instructions.AdrenaSetPoolWhitelistedSwapper]: AdrenaSetPoolWhitelistedSwapper,
       [Instructions.AdrenaInitializeOracleAccount]: AdrenaInitializeOracleAccount,
       [Instructions.AdrenaPatchCustodiesOracles]: AdrenaPatchCustodiesOracles,
+      [Instructions.AdrenaAddVest]: AdrenaAddVest,
+      [Instructions.AdrenaCancelVest]: AdrenaCancelVest,
       [Instructions.Burn]: BurnTokens,
       [Instructions.Transfer]: SplTokenTransfer,
       [Instructions.ProgramUpgrade]: ProgramUpgrade,
