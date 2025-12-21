@@ -85,7 +85,7 @@ export default function CancelVest({
 
     // Matches your cancel_vest.rs accounts:
     // admin, owner, payer, cortex, vest_registry, vest, system_program
-    const instruction = await adrenaClient.program.methods
+    const instruction = await (adrenaClient.program.methods as any)
       .cancelVest()
       .accountsStrict({
         admin: gov.nativeTreasuryAddress,
