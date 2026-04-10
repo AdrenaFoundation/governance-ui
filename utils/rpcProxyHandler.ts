@@ -78,6 +78,64 @@ async function forwardTo(url: string, body: unknown): Promise<ForwardResult> {
   }
 }
 
+// Triton's RPC backend has a bug where JSON-RPC batched requests whose
+// items are all `getProgramAccounts` calls on
+// `BPFLoaderUpgradeab1e11111111111111111111111` return a single
+// `-32700` parse-error response instead of a batched response. This
+// breaks governance-ui's program-governance discovery (used by every
+// Adrena admin form's Governance dropdown). Detect that pattern and
+// retry by forwarding each batched item as an individual request in
+// parallel, then recombining into a batch-shaped response.
+function looksLikeBatchParseBug(body: unknown): boolean {
+  return (
+    !!body &&
+    typeof body === 'object' &&
+    !Array.isArray(body) &&
+    typeof (body as { error?: unknown }).error === 'object' &&
+    (body as { error?: { code?: number } }).error?.code === -32700
+  )
+}
+
+async function forwardWithUnbatchFallback(
+  url: string,
+  body: unknown,
+): Promise<ForwardResult> {
+  const result = await forwardTo(url, body)
+
+  // Pass through unless: upstream succeeded at HTTP level, original was
+  // a batch, and the response body matches the Triton batch parse-error
+  // bug shape (single object with error.code -32700).
+  if (!result.ok) return result
+  if (!Array.isArray(body)) return result
+  if (!looksLikeBatchParseBug(result.body)) return result
+
+  // Workaround: forward each batched item as an individual request.
+  const batch = body as unknown[]
+  const individual = await Promise.all(
+    batch.map((item) => forwardTo(url, item)),
+  )
+
+  // If any sub-request failed at network level, surface the failure so
+  // the existing primary -> backup fallback can take over.
+  for (const r of individual) {
+    if (!r.ok) return r
+  }
+
+  // If any sub-request also tripped the same bug, our workaround did
+  // not help — surface as failure for the same reason.
+  const stillBuggy = individual.some((r) =>
+    looksLikeBatchParseBug((r as { ok: true; body: unknown }).body),
+  )
+  if (stillBuggy) {
+    return { ok: false, reason: 'batch parse bug persisted after unbatching' }
+  }
+
+  const combined = individual.map(
+    (r) => (r as { ok: true; body: unknown }).body,
+  )
+  return { ok: true, body: combined }
+}
+
 function validateMethods(
   body: unknown,
 ): { ok: true } | { ok: false; offending: string } {
@@ -154,7 +212,7 @@ export function createRpcProxyHandler(
       })
     }
 
-    const primaryResult = await forwardTo(primary, body)
+    const primaryResult = await forwardWithUnbatchFallback(primary, body)
     if (primaryResult.ok) {
       res.setHeader('X-RPC-Served-By', 'primary')
       return res.status(200).json(primaryResult.body)
@@ -169,7 +227,7 @@ export function createRpcProxyHandler(
         )
     }
 
-    const backupResult = await forwardTo(backup, body)
+    const backupResult = await forwardWithUnbatchFallback(backup, body)
     if (backupResult.ok) {
       res.setHeader('X-RPC-Served-By', 'backup')
       return res.status(200).json(backupResult.body)
