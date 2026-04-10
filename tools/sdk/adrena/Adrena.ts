@@ -204,7 +204,8 @@ export default class AdrenaClient {
     const pools = await this.program.account.pool.all()
 
     return pools.map((pool) => ({
-      ...pool.account,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(pool.account as any),
       pubkey: pool.publicKey,
     }))
   }
@@ -220,7 +221,8 @@ export default class AdrenaClient {
       await this.program.account.custody.fetchMultiple(custodiesPubkeys)
 
     return custodies.map((custody, index) => ({
-      ...custody,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(custody as any),
       pubkey: custodiesPubkeys[index],
     })) as CustodyWithPubkey[]
   }
@@ -229,7 +231,8 @@ export default class AdrenaClient {
     const stakings = await this.program.account.staking.all()
 
     return stakings.map((staking) => ({
-      ...staking.account,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(staking.account as any),
       pubkey: staking.publicKey,
     }))
   }
