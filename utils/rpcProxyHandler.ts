@@ -7,7 +7,7 @@ import axios, { AxiosError } from 'axios'
 // code in rpcFetch and trips the override banner.
 export const RPC_ALL_PROVIDERS_DOWN_CODE = -32098
 
-const PROXY_TIMEOUT_MS = 8000
+const PROXY_TIMEOUT_MS = 30000
 
 // JSON-RPC methods the proxy is willing to forward. Keep tight; expand
 // only when a real code path breaks because a needed method is missing.
