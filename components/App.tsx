@@ -29,7 +29,10 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react'
 import useLegacyConnectionContext from '@hooks/useLegacyConnectionContext'
-import { DEVNET_RPC, MAINNET_RPC } from 'constants/endpoints'
+import { getDevnetEndpoint, getMainnetEndpoint } from 'constants/endpoints'
+import { useRpcOverrideStore } from 'stores/useRpcOverrideStore'
+import { rpcFetch } from '@utils/rpcFetch'
+import RpcFallbackBanner from '@components/RpcFallbackBanner'
 import {
   SquadsEmbeddedWalletAdapter,
   detectEmbeddedInSquadsIframe,
@@ -75,9 +78,23 @@ export function App(props: Props) {
   const router = useRouter()
   const { cluster } = router.query
 
+  const mainnetOverride = useRpcOverrideStore((s) => s.mainnetOverride)
+  const devnetOverride = useRpcOverrideStore((s) => s.devnetOverride)
+
   const endpoint = useMemo(
-    () => (cluster === 'devnet' ? DEVNET_RPC : MAINNET_RPC),
-    [cluster],
+    () =>
+      cluster === 'devnet'
+        ? getDevnetEndpoint(devnetOverride)
+        : getMainnetEndpoint(mainnetOverride),
+    [cluster, mainnetOverride, devnetOverride],
+  )
+
+  const connectionConfig = useMemo(
+    () => ({
+      commitment: 'recent' as const,
+      fetch: rpcFetch,
+    }),
+    [],
   )
 
   const supportedWallets = useMemo(
@@ -89,9 +106,10 @@ export function App(props: Props) {
   )
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={endpoint} config={connectionConfig}>
       <WalletProvider wallets={supportedWallets}>
-        <AppContents {...props} />{' '}
+        <RpcFallbackBanner />
+        <AppContents {...props} />
       </WalletProvider>
     </ConnectionProvider>
   )
