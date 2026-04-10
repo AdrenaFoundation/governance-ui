@@ -153,13 +153,13 @@ export default function AddCustody({
           closePosition: form.feeClosePosition,
           liquidation: form.feeLiquidation,
           feeMax: form.feeMax,
-          padding: [0, 0],
+          padding: [0, 0, 0, 0, 0, 0],
           padding2: new BN(0),
         },
         borrowRate: {
           maxHourlyBorrowInterestRate: new BN(form.maxHourlyBorrowInterestRate),
         },
-        ratios: Array.from(Array(10)).map((_, i) => ({
+        ratios: Array.from(Array(8)).map((_, i) => ({
           min: form[`ratio${i + 1}Min`] as number,
           target: form[`ratio${i + 1}Target`] as number,
           max: form[`ratio${i + 1}Max`] as number,

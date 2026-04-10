@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.4.3",
   "name": "adrena",
   "instructions": [
     {
@@ -2244,6 +2244,24 @@
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -2378,6 +2396,24 @@
           "isSigner": false,
           "docs": [
             "#14"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
           ]
         }
       ],
@@ -2519,6 +2555,24 @@
           "isSigner": false,
           "docs": [
             "#16"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#18"
           ]
         }
       ],
@@ -2676,6 +2730,24 @@
           "isSigner": false,
           "docs": [
             "#18"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#19"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#20"
           ]
         }
       ],
@@ -3615,6 +3687,60 @@
           }
         }
       ]
+    },
+    {
+      "name": "additionalProtectionFee",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "#1"
+          ]
+        },
+        {
+          "name": "cortex",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#2"
+          ]
+        },
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#3"
+          ]
+        },
+        {
+          "name": "position",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#4"
+          ]
+        },
+        {
+          "name": "custody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
+        },
+        {
+          "name": "collateralCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#6"
+          ]
+        }
+      ],
+      "args": []
     },
     {
       "name": "updatePoolAum",
@@ -7095,6 +7221,24 @@
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -7291,6 +7435,24 @@
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -8173,6 +8335,24 @@
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -8305,6 +8485,24 @@
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -10245,11 +10443,19 @@
             "type": "u64"
           },
           {
+            "name": "rollingTradeWindowStart",
+            "type": "i64"
+          },
+          {
+            "name": "tradesInWindow",
+            "type": "u16"
+          },
+          {
             "name": "padding2",
             "type": {
               "array": [
                 "u8",
-                16
+                6
               ]
             }
           }
@@ -13508,6 +13714,9 @@
           },
           {
             "name": "V2"
+          },
+          {
+            "name": "V3"
           }
         ]
       }
