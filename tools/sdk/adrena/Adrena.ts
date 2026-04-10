@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import { IDL, Adrena } from '../../../idls/adrena'
+import { IDL } from '../../../idls/adrena'
 import { AnchorProvider, Program } from '@coral-xyz/anchor'
 
 export enum OriginBucket {
@@ -20,7 +20,7 @@ export enum LiquidityState {
 // AddCustody.tsx's form state declaration). The error manifests as
 // "Type instantiation is excessively deep and possibly infinite".
 // These aliases are typed as `any` to unblock the type-check; the
-// runtime IDL and `Program<Adrena>` behavior are unchanged, and the
+// runtime IDL and `Program<any>` behavior are unchanged, and the
 // Adrena admin forms only read a small handful of well-known fields
 // by convention anyway.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,14 +49,21 @@ export type PoolWithPubkey = WithPubkey<Pool>
 export type CustodyWithPubkey = WithPubkey<Custody>
 export type StakingWithPubkey = WithPubkey<Staking>
 
+// Program<Adrena> would force TypeScript to compute `.methods.X(...)` arg
+// types from the full IDL literal type, which exceeds TS's instantiation
+// depth limit for the v1.4.3 IDL. `Program<any>` skips that computation;
+// the runtime IDL is still the strongly-typed `IDL` const, so on-chain
+// behavior is unchanged.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default class AdrenaClient {
-  public readonly program: Program<Adrena>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public readonly program: Program<any>
 
   constructor(
     provider: AnchorProvider,
     public readonly programId: PublicKey,
   ) {
-    this.program = new Program<Adrena>(IDL, programId, provider)
+    this.program = new Program<any>(IDL, programId, provider)
   }
 
   public static readonly governanceProgram = new PublicKey(
