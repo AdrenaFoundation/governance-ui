@@ -35,8 +35,6 @@ config = withTM({
       process.env.MAIN_VIEW_SHOW_MAX_TOP_TOKENS_NUM,
     DISABLE_NFTS: process.env.DISABLE_NFTS,
     REALM: process.env.REALM,
-    MAINNET_RPC: process.env.MAINNET_RPC,
-    DEVNET_RPC: process.env.DEVNET_RPC,
     DEFAULT_GOVERNANCE_PROGRAM_ID: process.env.DEFAULT_GOVERNANCE_PROGRAM_ID,
   },
   //proxy for openserum api cors

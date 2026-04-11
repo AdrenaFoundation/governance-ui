@@ -10,12 +10,42 @@ import { USDC_MINT } from '@blockworks-foundation/mango-v4'
 import { useLocalStorage } from '@hooks/useLocalStorage'
 import { getJupiterPricesByMintStrings } from '@hooks/queries/jupiterPrice'
 
-const tokenListUrl = 'https://tokens.jup.ag/tokens?tags=verified,lst'
+// Jupiter v2 validates each tag individually and rejects comma-separated
+// lists (HTTP 200 body with `{status:400,...}`). As of this writing every
+// `lst` token is also tagged `verified`, so a single fetch covers both.
+const tokenListUrl = 'https://lite-api.jup.ag/tokens/v2/tag?query=verified'
 const CACHE_TTL_MS = 1000 * 60 * 60 * 24 // 24 hours
 const PRICE_STORAGE_KEY = 'tokenPrices'
 const PRICE_CACHE_TTL_MS = 1000 * 60 * 5 // 5 minutes TTL
 
 export type TokenInfoJupiter = TokenInfo
+
+// Jupiter's v2 token endpoint returns a different shape than v1
+// (id/icon instead of address/logoURI). Remap at ingest so all
+// downstream TokenInfo consumers keep working unchanged.
+type JupiterV2Token = {
+  id: string
+  name: string
+  symbol: string
+  icon?: string
+  decimals: number
+  tags?: string[]
+}
+
+const SOLANA_MAINNET_CHAIN_ID = 101
+
+function mapJupiterV2ToTokenInfo(data: unknown): TokenInfo[] {
+  if (!Array.isArray(data)) return []
+  return (data as JupiterV2Token[]).map((t) => ({
+    chainId: SOLANA_MAINNET_CHAIN_ID,
+    address: t.id,
+    name: t.name,
+    symbol: t.symbol,
+    decimals: t.decimals,
+    logoURI: t.icon,
+    tags: t.tags,
+  }))
+}
 
 class TokenPriceService {
   _tokenList: TokenInfo[]
@@ -30,41 +60,19 @@ class TokenPriceService {
     this._unverifiedTokenCache = {}
   }
 
-  async fetchSolanaTokenList() {
-    try {
-      const tokens = await axios.get(tokenListUrl)
-      const tokenList = tokens.data as TokenInfo[]
-      if (tokenList && tokenList.length) {
-        this._tokenList = tokenList.map((token) => {
-          const override = overrides[token.address]
-
-          if (override) {
-            return mergeDeepRight(token, override)
-          }
-
-          return token
-        })
-      }
-    } catch (e) {
-      console.log(e)
-      notify({
-        type: 'error',
-        message: 'unable to fetch token list',
-      })
-    }
-  }
-
   async fetchSolanaTokenListV2(): Promise<TokenInfo[]> {
     const storage = useLocalStorage()
-    const tokenListRaw = storage.getItem('tokenList')
-    const ttl = storage.getItem('tokenListTTL')
+    // Keys bumped to _v2 so stale caches from the old Jupiter endpoint
+    // (different shape) are ignored on upgrade.
+    const tokenListRaw = storage.getItem('tokenList_v2')
+    const ttl = storage.getItem('tokenListTTL_v2')
 
     let tokenList: TokenInfo[] = []
 
     try {
       if (!tokenListRaw || !ttl || Date.now() > Number(ttl)) {
         const response = await axios.get(tokenListUrl)
-        const tokens = response.data as TokenInfo[]
+        const tokens = mapJupiterV2ToTokenInfo(response.data)
 
         if (tokens && tokens.length) {
           tokenList = tokens.map((token) => {
@@ -77,8 +85,11 @@ class TokenPriceService {
             return token
           })
 
-          storage.setItem('tokenList', JSON.stringify(tokenList))
-          storage.setItem('tokenListTTL', String(Date.now() + CACHE_TTL_MS))
+          storage.setItem('tokenList_v2', JSON.stringify(tokenList))
+          storage.setItem(
+            'tokenListTTL_v2',
+            String(Date.now() + CACHE_TTL_MS),
+          )
         }
       } else {
         tokenList = JSON.parse(tokenListRaw)

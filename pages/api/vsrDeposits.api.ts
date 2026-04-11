@@ -10,7 +10,7 @@ import { VsrClient } from 'VoteStakeRegistry/sdk/client'
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!process.env.BACKEND_MAINNET_RPC)
     return res.status(500).json('BACKEND_MAINNET_RPC not provided in env')
-  const conn = new Connection(process.env.BACKEND_MAINNET_RPC, 'recent')
+  const conn = new Connection(process.env.BACKEND_MAINNET_RPC, 'confirmed')
 
   const options = AnchorProvider.defaultOptions()
   const adminProvider = new AnchorProvider(

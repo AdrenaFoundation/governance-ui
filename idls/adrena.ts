@@ -1,5 +1,5 @@
 export type Adrena = {
-  "version": "1.3.8",
+  "version": "1.4.3",
   "name": "adrena",
   "instructions": [
     {
@@ -439,6 +439,47 @@ export type Adrena = {
         }
       ],
       "returns": "u8"
+    },
+    {
+      "name": "cancelVest",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "cortex",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vestRegistry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vest",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "setVestDelegate",
@@ -2203,6 +2244,24 @@ export type Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -2337,6 +2396,24 @@ export type Adrena = {
           "isSigner": false,
           "docs": [
             "#14"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
           ]
         }
       ],
@@ -2478,6 +2555,24 @@ export type Adrena = {
           "isSigner": false,
           "docs": [
             "#16"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#18"
           ]
         }
       ],
@@ -2635,6 +2730,24 @@ export type Adrena = {
           "isSigner": false,
           "docs": [
             "#18"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#19"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#20"
           ]
         }
       ],
@@ -3574,6 +3687,60 @@ export type Adrena = {
           }
         }
       ]
+    },
+    {
+      "name": "additionalProtectionFee",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "#1"
+          ]
+        },
+        {
+          "name": "cortex",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#2"
+          ]
+        },
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#3"
+          ]
+        },
+        {
+          "name": "position",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#4"
+          ]
+        },
+        {
+          "name": "custody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
+        },
+        {
+          "name": "collateralCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#6"
+          ]
+        }
+      ],
+      "args": []
     },
     {
       "name": "updatePoolAum",
@@ -7054,6 +7221,24 @@ export type Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -7250,6 +7435,24 @@ export type Adrena = {
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -8132,6 +8335,24 @@ export type Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -8264,6 +8485,24 @@ export type Adrena = {
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -9259,7 +9498,7 @@ export type Adrena = {
   ],
   "accounts": [
     {
-      "name": "cortex",
+      "name": "Cortex",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9385,7 +9624,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "custody",
+      "name": "Custody",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9510,7 +9749,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "genesisLock",
+      "name": "GenesisLock",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9598,7 +9837,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "limitOrderBook",
+      "name": "LimitOrderBook",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9646,7 +9885,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "oracle",
+      "name": "Oracle",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9682,7 +9921,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "pool",
+      "name": "Pool",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9790,7 +10029,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "position",
+      "name": "Position",
       "type": {
         "kind": "struct",
         "fields": [
@@ -9918,7 +10157,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "staking",
+      "name": "Staking",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10069,7 +10308,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "userProfileV1",
+      "name": "UserProfileV1",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10132,7 +10371,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "userProfile",
+      "name": "UserProfile",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10204,11 +10443,19 @@ export type Adrena = {
             "type": "u64"
           },
           {
+            "name": "rollingTradeWindowStart",
+            "type": "i64"
+          },
+          {
+            "name": "tradesInWindow",
+            "type": "u16"
+          },
+          {
             "name": "padding2",
             "type": {
               "array": [
                 "u8",
-                16
+                6
               ]
             }
           }
@@ -10216,7 +10463,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "userStaking",
+      "name": "UserStaking",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10271,7 +10518,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "vestV1",
+      "name": "VestV1",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10323,7 +10570,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "vestRegistry",
+      "name": "VestRegistry",
       "type": {
         "kind": "struct",
         "fields": [
@@ -10349,7 +10596,7 @@ export type Adrena = {
       }
     },
     {
-      "name": "vest",
+      "name": "Vest",
       "type": {
         "kind": "struct",
         "fields": [
@@ -12495,8 +12742,13 @@ export type Adrena = {
             }
           },
           {
-            "name": "cumulativeInterestUsd",
-            "type": "u64"
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
           },
           {
             "name": "collateralUsd",
@@ -12519,7 +12771,34 @@ export type Adrena = {
                 {
                   "defined": "StableLockedAmountStat"
                 },
-                2
+                1
+              ]
+            }
+          },
+          {
+            "name": "prepaidInterestUsd",
+            "type": "u64"
+          },
+          {
+            "name": "tmpOffsetEndTs",
+            "type": "u64"
+          },
+          {
+            "name": "tmpOffset",
+            "type": {
+              "defined": "U128Split"
+            }
+          },
+          {
+            "name": "unrealizedInterestUsd",
+            "type": "u64"
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                8
               ]
             }
           }
@@ -13120,21 +13399,309 @@ export type Adrena = {
       "name": "Title",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
+          },
+          {
+            "name": "AwakeningRank1"
+          },
+          {
+            "name": "AwakeningChallenger"
+          },
+          {
+            "name": "AwakeningContender"
+          },
+          {
+            "name": "ExpanseRank1"
+          },
+          {
+            "name": "ExpanseChallenger"
+          },
+          {
+            "name": "ExpanseContender"
+          },
+          {
+            "name": "Trader"
+          },
+          {
+            "name": "EmergingTrader"
+          },
+          {
+            "name": "TopTier"
+          },
+          {
+            "name": "VolumeKing"
+          },
+          {
+            "name": "FutureMcDonaldsEmployee"
+          },
+          {
+            "name": "HighlyUnprofitableTrader"
+          },
+          {
+            "name": "SeverelyWounded"
+          },
+          {
+            "name": "DaddysMoney"
+          },
+          {
+            "name": "AllInAllGone"
+          },
+          {
+            "name": "HighlyProfitableTrader"
+          },
+          {
+            "name": "CertifiedMoneyPrinter"
+          },
+          {
+            "name": "WhaleAmongMen"
+          },
+          {
+            "name": "ApexTrader"
+          },
+          {
+            "name": "Unstoppable"
+          },
+          {
+            "name": "FreeKebab"
+          },
+          {
+            "name": "PassiveIncome"
+          },
+          {
+            "name": "AdrenaStakeholder"
+          },
+          {
+            "name": "BoardMember"
+          },
+          {
+            "name": "LiquidityKing"
+          },
+          {
+            "name": "BadLuckBrian"
+          },
+          {
+            "name": "LeCramer"
+          },
+          {
+            "name": "TheChameleon"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
       "name": "Wallpaper",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "One"
+          },
+          {
+            "name": "Two"
+          },
+          {
+            "name": "Three"
+          },
+          {
+            "name": "Four"
+          },
+          {
+            "name": "VolumeKing"
+          },
+          {
+            "name": "Streak5"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
       "name": "ProfilePicture",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "One"
+          },
+          {
+            "name": "Two"
+          },
+          {
+            "name": "Three"
+          },
+          {
+            "name": "Four"
+          },
+          {
+            "name": "TopTier"
+          },
+          {
+            "name": "WhaleAmongMen"
+          },
+          {
+            "name": "Streak10"
+          },
+          {
+            "name": "StakedHolder"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
+          }
+        ]
       }
     },
     {
@@ -13147,6 +13714,9 @@ export type Adrena = {
           },
           {
             "name": "V2"
+          },
+          {
+            "name": "V3"
           }
         ]
       }
@@ -13204,7 +13774,242 @@ export type Adrena = {
       "name": "Achievement",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "FirstTrade"
+          },
+          {
+            "name": "KeepADX50Percent"
+          },
+          {
+            "name": "KeepADX90Percent"
+          },
+          {
+            "name": "AwakeningRank1"
+          },
+          {
+            "name": "AwakeningChallenger"
+          },
+          {
+            "name": "AwakeningContender"
+          },
+          {
+            "name": "ExpanseRank1"
+          },
+          {
+            "name": "ExpanseChallenger"
+          },
+          {
+            "name": "ExpanseContender"
+          },
+          {
+            "name": "FirstProfitableTrade"
+          },
+          {
+            "name": "Volume1M"
+          },
+          {
+            "name": "Volume10M"
+          },
+          {
+            "name": "Volume100M"
+          },
+          {
+            "name": "Volume250M"
+          },
+          {
+            "name": "Volume500M"
+          },
+          {
+            "name": "Volume1B"
+          },
+          {
+            "name": "Loss5K"
+          },
+          {
+            "name": "Loss10K"
+          },
+          {
+            "name": "Loss50K"
+          },
+          {
+            "name": "Loss200K"
+          },
+          {
+            "name": "Loss500K"
+          },
+          {
+            "name": "Loss1M"
+          },
+          {
+            "name": "Profit5K"
+          },
+          {
+            "name": "Profit10K"
+          },
+          {
+            "name": "Profit50K"
+          },
+          {
+            "name": "Profit200K"
+          },
+          {
+            "name": "Profit500K"
+          },
+          {
+            "name": "Profit1M"
+          },
+          {
+            "name": "Streak5"
+          },
+          {
+            "name": "Streak10"
+          },
+          {
+            "name": "Streak20"
+          },
+          {
+            "name": "StakedEarnings10"
+          },
+          {
+            "name": "StakedEarnings1K"
+          },
+          {
+            "name": "StakedEarnings5K"
+          },
+          {
+            "name": "StakedEarnings10K"
+          },
+          {
+            "name": "StakedEarnings50K"
+          },
+          {
+            "name": "StakedEarnings100K"
+          },
+          {
+            "name": "StakedHoldings1M"
+          },
+          {
+            "name": "StakedHoldings3M"
+          },
+          {
+            "name": "StakedHoldings6M"
+          },
+          {
+            "name": "StakedHoldings10M"
+          },
+          {
+            "name": "StakedHoldings20M"
+          },
+          {
+            "name": "StakedHoldings50M"
+          },
+          {
+            "name": "Liquidity1K"
+          },
+          {
+            "name": "Liquidity50K"
+          },
+          {
+            "name": "Liquidity100K"
+          },
+          {
+            "name": "Liquidity250K"
+          },
+          {
+            "name": "Liquidity500K"
+          },
+          {
+            "name": "Liquidity1M"
+          },
+          {
+            "name": "TradeOpen30Days"
+          },
+          {
+            "name": "Liquidated1"
+          },
+          {
+            "name": "Liquidated25"
+          },
+          {
+            "name": "Liquidated50"
+          },
+          {
+            "name": "Liquidated100"
+          },
+          {
+            "name": "ChangeUsername10"
+          },
+          {
+            "name": "Soldier"
+          },
+          {
+            "name": "Sergeant"
+          },
+          {
+            "name": "Lieutenant"
+          },
+          {
+            "name": "General"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
@@ -14064,7 +14869,7 @@ export type Adrena = {
     {
       "code": 6066,
       "name": "PositionTooYoung",
-      "msg": "A position cannot be close right after open, a slight delay is enforced"
+      "msg": "A position cannot be close right after open or update, a slight delay is enforced"
     },
     {
       "code": 6067,
@@ -14170,7 +14975,7 @@ export type Adrena = {
 };
 
 export const IDL: Adrena = {
-  "version": "1.3.8",
+  "version": "1.4.3",
   "name": "adrena",
   "instructions": [
     {
@@ -14610,6 +15415,47 @@ export const IDL: Adrena = {
         }
       ],
       "returns": "u8"
+    },
+    {
+      "name": "cancelVest",
+      "accounts": [
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "cortex",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vestRegistry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vest",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     },
     {
       "name": "setVestDelegate",
@@ -16374,6 +17220,24 @@ export const IDL: Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -16508,6 +17372,24 @@ export const IDL: Adrena = {
           "isSigner": false,
           "docs": [
             "#14"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
           ]
         }
       ],
@@ -16649,6 +17531,24 @@ export const IDL: Adrena = {
           "isSigner": false,
           "docs": [
             "#16"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#18"
           ]
         }
       ],
@@ -16806,6 +17706,24 @@ export const IDL: Adrena = {
           "isSigner": false,
           "docs": [
             "#18"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#19"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#20"
           ]
         }
       ],
@@ -17745,6 +18663,60 @@ export const IDL: Adrena = {
           }
         }
       ]
+    },
+    {
+      "name": "additionalProtectionFee",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true,
+          "docs": [
+            "#1"
+          ]
+        },
+        {
+          "name": "cortex",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#2"
+          ]
+        },
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "#3"
+          ]
+        },
+        {
+          "name": "position",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#4"
+          ]
+        },
+        {
+          "name": "custody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#5"
+          ]
+        },
+        {
+          "name": "collateralCustody",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "#6"
+          ]
+        }
+      ],
+      "args": []
     },
     {
       "name": "updatePoolAum",
@@ -21225,6 +22197,24 @@ export const IDL: Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -21421,6 +22411,24 @@ export const IDL: Adrena = {
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -22303,6 +23311,24 @@ export const IDL: Adrena = {
           "docs": [
             "#14"
           ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#15"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
         }
       ],
       "args": [
@@ -22435,6 +23461,24 @@ export const IDL: Adrena = {
           "isSigner": false,
           "docs": [
             "#15"
+          ]
+        },
+        {
+          "name": "userProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#16"
+          ]
+        },
+        {
+          "name": "referrerProfile",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": true,
+          "docs": [
+            "#17"
           ]
         }
       ],
@@ -23430,7 +24474,7 @@ export const IDL: Adrena = {
   ],
   "accounts": [
     {
-      "name": "cortex",
+      "name": "Cortex",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23556,7 +24600,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "custody",
+      "name": "Custody",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23681,7 +24725,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "genesisLock",
+      "name": "GenesisLock",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23769,7 +24813,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "limitOrderBook",
+      "name": "LimitOrderBook",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23817,7 +24861,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "oracle",
+      "name": "Oracle",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23853,7 +24897,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "pool",
+      "name": "Pool",
       "type": {
         "kind": "struct",
         "fields": [
@@ -23961,7 +25005,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "position",
+      "name": "Position",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24089,7 +25133,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "staking",
+      "name": "Staking",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24240,7 +25284,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "userProfileV1",
+      "name": "UserProfileV1",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24303,7 +25347,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "userProfile",
+      "name": "UserProfile",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24375,11 +25419,19 @@ export const IDL: Adrena = {
             "type": "u64"
           },
           {
+            "name": "rollingTradeWindowStart",
+            "type": "i64"
+          },
+          {
+            "name": "tradesInWindow",
+            "type": "u16"
+          },
+          {
             "name": "padding2",
             "type": {
               "array": [
                 "u8",
-                16
+                6
               ]
             }
           }
@@ -24387,7 +25439,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "userStaking",
+      "name": "UserStaking",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24442,7 +25494,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "vestV1",
+      "name": "VestV1",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24494,7 +25546,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "vestRegistry",
+      "name": "VestRegistry",
       "type": {
         "kind": "struct",
         "fields": [
@@ -24520,7 +25572,7 @@ export const IDL: Adrena = {
       }
     },
     {
-      "name": "vest",
+      "name": "Vest",
       "type": {
         "kind": "struct",
         "fields": [
@@ -26666,8 +27718,13 @@ export const IDL: Adrena = {
             }
           },
           {
-            "name": "cumulativeInterestUsd",
-            "type": "u64"
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
           },
           {
             "name": "collateralUsd",
@@ -26690,7 +27747,34 @@ export const IDL: Adrena = {
                 {
                   "defined": "StableLockedAmountStat"
                 },
-                2
+                1
+              ]
+            }
+          },
+          {
+            "name": "prepaidInterestUsd",
+            "type": "u64"
+          },
+          {
+            "name": "tmpOffsetEndTs",
+            "type": "u64"
+          },
+          {
+            "name": "tmpOffset",
+            "type": {
+              "defined": "U128Split"
+            }
+          },
+          {
+            "name": "unrealizedInterestUsd",
+            "type": "u64"
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u8",
+                8
               ]
             }
           }
@@ -27291,21 +28375,309 @@ export const IDL: Adrena = {
       "name": "Title",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
+          },
+          {
+            "name": "AwakeningRank1"
+          },
+          {
+            "name": "AwakeningChallenger"
+          },
+          {
+            "name": "AwakeningContender"
+          },
+          {
+            "name": "ExpanseRank1"
+          },
+          {
+            "name": "ExpanseChallenger"
+          },
+          {
+            "name": "ExpanseContender"
+          },
+          {
+            "name": "Trader"
+          },
+          {
+            "name": "EmergingTrader"
+          },
+          {
+            "name": "TopTier"
+          },
+          {
+            "name": "VolumeKing"
+          },
+          {
+            "name": "FutureMcDonaldsEmployee"
+          },
+          {
+            "name": "HighlyUnprofitableTrader"
+          },
+          {
+            "name": "SeverelyWounded"
+          },
+          {
+            "name": "DaddysMoney"
+          },
+          {
+            "name": "AllInAllGone"
+          },
+          {
+            "name": "HighlyProfitableTrader"
+          },
+          {
+            "name": "CertifiedMoneyPrinter"
+          },
+          {
+            "name": "WhaleAmongMen"
+          },
+          {
+            "name": "ApexTrader"
+          },
+          {
+            "name": "Unstoppable"
+          },
+          {
+            "name": "FreeKebab"
+          },
+          {
+            "name": "PassiveIncome"
+          },
+          {
+            "name": "AdrenaStakeholder"
+          },
+          {
+            "name": "BoardMember"
+          },
+          {
+            "name": "LiquidityKing"
+          },
+          {
+            "name": "BadLuckBrian"
+          },
+          {
+            "name": "LeCramer"
+          },
+          {
+            "name": "TheChameleon"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
       "name": "Wallpaper",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "One"
+          },
+          {
+            "name": "Two"
+          },
+          {
+            "name": "Three"
+          },
+          {
+            "name": "Four"
+          },
+          {
+            "name": "VolumeKing"
+          },
+          {
+            "name": "Streak5"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
       "name": "ProfilePicture",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "Zero"
+          },
+          {
+            "name": "One"
+          },
+          {
+            "name": "Two"
+          },
+          {
+            "name": "Three"
+          },
+          {
+            "name": "Four"
+          },
+          {
+            "name": "TopTier"
+          },
+          {
+            "name": "WhaleAmongMen"
+          },
+          {
+            "name": "Streak10"
+          },
+          {
+            "name": "StakedHolder"
+          },
+          {
+            "name": "SoldierS2"
+          },
+          {
+            "name": "SergeantS2"
+          },
+          {
+            "name": "LieutenantS2"
+          },
+          {
+            "name": "GeneralS2"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "NiceGuy"
+          },
+          {
+            "name": "GoldenHands"
+          },
+          {
+            "name": "DiamondHands"
+          }
+        ]
       }
     },
     {
@@ -27318,6 +28690,9 @@ export const IDL: Adrena = {
           },
           {
             "name": "V2"
+          },
+          {
+            "name": "V3"
           }
         ]
       }
@@ -27375,7 +28750,242 @@ export const IDL: Adrena = {
       "name": "Achievement",
       "type": {
         "kind": "enum",
-        "variants": [ { "name": "Zero" } ]
+        "variants": [
+          {
+            "name": "FirstTrade"
+          },
+          {
+            "name": "KeepADX50Percent"
+          },
+          {
+            "name": "KeepADX90Percent"
+          },
+          {
+            "name": "AwakeningRank1"
+          },
+          {
+            "name": "AwakeningChallenger"
+          },
+          {
+            "name": "AwakeningContender"
+          },
+          {
+            "name": "ExpanseRank1"
+          },
+          {
+            "name": "ExpanseChallenger"
+          },
+          {
+            "name": "ExpanseContender"
+          },
+          {
+            "name": "FirstProfitableTrade"
+          },
+          {
+            "name": "Volume1M"
+          },
+          {
+            "name": "Volume10M"
+          },
+          {
+            "name": "Volume100M"
+          },
+          {
+            "name": "Volume250M"
+          },
+          {
+            "name": "Volume500M"
+          },
+          {
+            "name": "Volume1B"
+          },
+          {
+            "name": "Loss5K"
+          },
+          {
+            "name": "Loss10K"
+          },
+          {
+            "name": "Loss50K"
+          },
+          {
+            "name": "Loss200K"
+          },
+          {
+            "name": "Loss500K"
+          },
+          {
+            "name": "Loss1M"
+          },
+          {
+            "name": "Profit5K"
+          },
+          {
+            "name": "Profit10K"
+          },
+          {
+            "name": "Profit50K"
+          },
+          {
+            "name": "Profit200K"
+          },
+          {
+            "name": "Profit500K"
+          },
+          {
+            "name": "Profit1M"
+          },
+          {
+            "name": "Streak5"
+          },
+          {
+            "name": "Streak10"
+          },
+          {
+            "name": "Streak20"
+          },
+          {
+            "name": "StakedEarnings10"
+          },
+          {
+            "name": "StakedEarnings1K"
+          },
+          {
+            "name": "StakedEarnings5K"
+          },
+          {
+            "name": "StakedEarnings10K"
+          },
+          {
+            "name": "StakedEarnings50K"
+          },
+          {
+            "name": "StakedEarnings100K"
+          },
+          {
+            "name": "StakedHoldings1M"
+          },
+          {
+            "name": "StakedHoldings3M"
+          },
+          {
+            "name": "StakedHoldings6M"
+          },
+          {
+            "name": "StakedHoldings10M"
+          },
+          {
+            "name": "StakedHoldings20M"
+          },
+          {
+            "name": "StakedHoldings50M"
+          },
+          {
+            "name": "Liquidity1K"
+          },
+          {
+            "name": "Liquidity50K"
+          },
+          {
+            "name": "Liquidity100K"
+          },
+          {
+            "name": "Liquidity250K"
+          },
+          {
+            "name": "Liquidity500K"
+          },
+          {
+            "name": "Liquidity1M"
+          },
+          {
+            "name": "TradeOpen30Days"
+          },
+          {
+            "name": "Liquidated1"
+          },
+          {
+            "name": "Liquidated25"
+          },
+          {
+            "name": "Liquidated50"
+          },
+          {
+            "name": "Liquidated100"
+          },
+          {
+            "name": "ChangeUsername10"
+          },
+          {
+            "name": "Soldier"
+          },
+          {
+            "name": "Sergeant"
+          },
+          {
+            "name": "Lieutenant"
+          },
+          {
+            "name": "General"
+          },
+          {
+            "name": "BonkOperative"
+          },
+          {
+            "name": "JitoJuggernaut"
+          },
+          {
+            "name": "Season2Champion"
+          },
+          {
+            "name": "Season2Destroyer"
+          },
+          {
+            "name": "CrownSniffer"
+          },
+          {
+            "name": "CertifiedMenace"
+          },
+          {
+            "name": "TombRaider"
+          },
+          {
+            "name": "Saboteur"
+          },
+          {
+            "name": "Traitor"
+          },
+          {
+            "name": "Opportunist"
+          },
+          {
+            "name": "Relentless"
+          },
+          {
+            "name": "WetAndLosing"
+          },
+          {
+            "name": "Underwater"
+          },
+          {
+            "name": "BossMuncher"
+          },
+          {
+            "name": "Scratcher"
+          },
+          {
+            "name": "PaperBeatRock"
+          },
+          {
+            "name": "ThePainmaker"
+          },
+          {
+            "name": "ChickenWings"
+          },
+          {
+            "name": "NiceGuy"
+          }
+        ]
       }
     },
     {
@@ -28235,7 +29845,7 @@ export const IDL: Adrena = {
     {
       "code": 6066,
       "name": "PositionTooYoung",
-      "msg": "A position cannot be close right after open, a slight delay is enforced"
+      "msg": "A position cannot be close right after open or update, a slight delay is enforced"
     },
     {
       "code": 6067,
