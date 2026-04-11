@@ -141,6 +141,10 @@ export default function useGovernanceAssets() {
   //
   // Packages are visible by default
   const packages: Packages = {
+    [PackageEnum.Adrena]: {
+      name: 'Adrena',
+      image: '/img/adrena.svg',
+    },
     [PackageEnum.Common]: {
       name: 'Common',
     },
@@ -225,6 +229,98 @@ export default function useGovernanceAssets() {
   //
   // If isVisible is not set, it is equal to canUseAnyInstruction
   const instructionsMap: InstructionsMap = {
+    /*
+       █████  ██████  ██████  ███████ ███    ██  █████  
+      ██   ██ ██   ██ ██   ██ ██      ████   ██ ██   ██ 
+      ███████ ██   ██ ██████  █████   ██ ██  ██ ███████ 
+      ██   ██ ██   ██ ██   ██ ██      ██  ██ ██ ██   ██ 
+      ██   ██ ██████  ██   ██ ███████ ██   ████ ██   ██
+    */
+    [Instructions.AdrenaMintLmTokensFromBucket]: {
+      name: 'Mint LM Tokens from Bucket',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaMintAllLmTokens]: {
+      name: 'Mint All Lm Tokens',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetCustodyAllowSwap]: {
+      name: 'Set Custody Allow Swap',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetCustodyAllowTrade]: {
+      name: 'Set Custody Allow Trade',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetCustodyMaxCumulativeShortSizeUsd]: {
+      name: 'Set Custody Max Cumulative Short Size Usd',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetPoolAllowSwap]: {
+      name: 'Set Pool Allow Swap',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetPoolWhitelistedSwapper]: {
+      name: 'Set Pool Whitelisted Swapper',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetPoolAllowTrade]: {
+      name: 'Set Pool Allow Trade',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetPoolAumSoftCapUsd]: {
+      name: 'Set Pool Aum Soft Cap Usd',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetPoolLiquidityState]: {
+      name: 'Set Pool Liquidity State',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetVestDelegate]: {
+      name: 'Set Vest Delegate',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetStakingLmEmissionPotentiometers]: {
+      name: 'Set Staking LM Emission Potentiometers',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaGenesisOtcIn]: {
+      name: 'Genesis OTC IN',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaInitializeOracleAccount]: {
+      name: 'Initialize Oracle Account',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaPatchCustodiesOracles]: {
+      name: 'Patch Custodies Oracles',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaGenesisOtcOut]: {
+      name: 'Genesis OTC OUT',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetProtocolFeeRecipient]: {
+      name: 'Set Protocol Fee Recipient',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaAddCustody]: {
+      name: 'Add Custody',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaSetCustodyConfig]: {
+      name: 'Set Custody Config',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaAddVest]: {
+      name: 'Add Vest',
+      packageId: PackageEnum.Adrena,
+    },
+    [Instructions.AdrenaCancelVest]: {
+      name: 'Cancel Vest',
+      packageId: PackageEnum.Adrena,
+    },
+
     /*
         ██████  ██████  ███    ███ ███    ███  ██████  ███    ██
        ██      ██    ██ ████  ████ ████  ████ ██    ██ ████   ██

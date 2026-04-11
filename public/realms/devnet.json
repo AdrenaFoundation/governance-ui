@@ -283,5 +283,18 @@
     "twitter": "@DriftProtocol",
     "discord": "http://discord.com/invite/drifting",
     "github": "https://github.com/drift-labs/protocol-v2"
+  },
+  {
+    "symbol": "Adrena",
+    "displayName": "Adrena",
+    "category": "defi",
+    "bannerImage": "/realms/Adrena/banner.png",
+    "programId": "GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw",
+    "realmId": "8v8d88EQB9MeXNMhK4xcYQCbMgjn7BjkGZkneecXiFRK",
+    "ogImage": "/realms/Adrena/logo.png",
+    "shortDescription": "Perpetuals DEX for the Solana community.",
+    "website": "https://app.adrena.xyz/",
+    "twitter": "@AdrenaProtocol",
+    "discord": "https://discord.gg/adrena"
   }
 ]

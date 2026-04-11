@@ -37,6 +37,15 @@ import dayjs from 'dayjs'
 import { JUPITER_REF } from './programs/jupiterRef'
 import { STAKE_SANCTUM_INSTRUCTIONS } from './programs/stakeSanctum'
 import { SYMMETRY_V2_INSTRUCTIONS } from './programs/symmetryV2'
+import {
+  AnchorProvider,
+  BN,
+  BorshInstructionCoder,
+  Idl,
+  Program,
+  Wallet,
+} from '@coral-xyz/anchor'
+import { sha256 } from '@noble/hashes/sha256'
 import { TOKEN_2022_INST } from './programs/token2022'
 import { MANIFEST_INSTRUCTIONS } from './programs/manifest'
 
@@ -573,11 +582,156 @@ export const INSTRUCTION_DESCRIPTORS = {
   ...MANIFEST_INSTRUCTIONS,
 }
 
+function getAnchorMethodDiscriminator(name: string): Buffer {
+  return Buffer.from(sha256(`global:${name}`).slice(0, 8))
+}
+
+function camelToSnakeCase(str: string): string {
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+}
+
+function displayValue(value: unknown) {
+  if (value instanceof BN) {
+    const formattedNumber = value
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+    return formattedNumber
+  }
+
+  if (typeof value === 'number') {
+    return value.toLocaleString()
+  }
+
+  if (Array.isArray(value)) {
+    // Display simple arrays as JSON in one line
+    if (value.length === 0 || value.every((v) => typeof v === 'number')) {
+      return <div>{JSON.stringify(value)}</div>
+    }
+
+    return (
+      <div className="flex flex-col">
+        <div>[</div>
+
+        <div className="flex flex-col ml-4">
+          {value.map((v, i) => (
+            <div key={i}>{displayValue(v)}</div>
+          ))}
+        </div>
+
+        <div>]</div>
+      </div>
+    )
+  }
+
+  if (value === null) return 'null'
+
+  if (typeof value === 'string') {
+    return `"${value}"`
+  }
+
+  if (value instanceof PublicKey) {
+    return new PublicKey(value.toString()).toBase58()
+  }
+
+  if (typeof value === 'object') {
+    const v = Object.entries(value).map(([key, value], i) => (
+      <div className="flex gap-2" key={i}>
+        <div className="w-[10em]">{key}:</div>
+        <div>{displayValue(value)}</div>
+      </div>
+    ))
+
+    return (
+      <div className="flex flex-col">
+        <div>{'{'}</div>
+        <div className="flex flex-col ml-4">{v}</div>
+        <div>{'}'}</div>
+      </div>
+    )
+  }
+
+  return String(value)
+}
+
+function generateInstructionDescriptorFromIDL(idl: Idl) {
+  return idl.instructions.reduce((acc, instruction) => {
+    let name = instruction.name
+
+    name = name.charAt(0).toUpperCase() + name.slice(1)
+
+    const anchorDiscriminator = getAnchorMethodDiscriminator(
+      camelToSnakeCase(instruction.name)
+    )
+
+    return {
+      ...acc,
+      [`${anchorDiscriminator[0]}${anchorDiscriminator[1]}`]: {
+        name,
+        accounts: instruction.accounts.map((account) => ({
+          name: account.name,
+        })),
+        getDataUI: async (_connection: Connection, data: Uint8Array) => {
+          const instructionCoder = new BorshInstructionCoder(idl)
+
+          try {
+            const ix = instructionCoder.decode(Buffer.from(data))
+
+            return (
+              <div className="flex flex-col w-full gap-2">
+                {displayValue(
+                  // Cast as the type is incorrect
+                  // If anything fails - display the data as usual
+                  ((ix as unknown) as {
+                    data: {
+                      params: Record<string, any>
+                    }
+                  }).data.params
+                )}
+              </div>
+            )
+          } catch (error) {
+            console.warn(error)
+
+            return JSON.stringify(data)
+          }
+        },
+      },
+    }
+  }, {})
+}
+
 export async function getInstructionDescriptor(
   connection: ConnectionContext,
   instruction: InstructionData,
   realm?: ProgramAccount<Realm> | undefined,
 ) {
+  // Use on-chain IDL if available
+  {
+    const idl = await Program.fetchIdl(
+      instruction.programId,
+      new AnchorProvider(connection.current, (null as unknown) as Wallet, {})
+    )
+
+    if (idl !== null) {
+      const descriptors = generateInstructionDescriptorFromIDL(idl)
+
+      const descriptor =
+        descriptors[`${instruction.data[0]}${instruction.data[1]}`]
+
+      if (descriptor) {
+        return {
+          name: descriptor.name,
+          accounts: descriptor.accounts,
+          dataUI: await descriptor.getDataUI(
+            connection.current,
+            instruction.data
+          ),
+        }
+      }
+    }
+  }
+
   let descriptors: any
   let instructionToDecode = { ...instruction }
   const isUsingForwardProgram =

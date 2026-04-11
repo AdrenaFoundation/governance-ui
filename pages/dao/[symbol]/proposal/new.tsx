@@ -59,6 +59,27 @@ import WithdrawFromOracle from './components/instructions/Switchboard/WithdrawFr
 import StakeValidator from './components/instructions/Validators/StakeValidator'
 import SanctumDepositStake from './components/instructions/Validators/SanctumDepositStake'
 import SanctumWithdrawStake from './components/instructions/Validators/SanctumWithdrawStake'
+import AdrenaMintLmTokensFromBucket from './components/instructions/Adrena/MintLmTokensFromBucket'
+import AdrenaMintAllLmTokens from './components/instructions/Adrena/MintAllLmTokens'
+import AdrenaSetCustodyAllowSwap from './components/instructions/Adrena/SetCustodyAllowSwap'
+import AdrenaSetCustodyAllowTrade from './components/instructions/Adrena/SetCustodyAllowTrade'
+import AdrenaSetCustodyMaxCumulativeShortSizeUsd from './components/instructions/Adrena/SetCustodyMaxCumulativeShortSizeUsd'
+import AdrenaSetPoolAllowSwap from './components/instructions/Adrena/SetPoolAllowSwap'
+import AdrenaSetPoolWhitelistedSwapper from './components/instructions/Adrena/SetPoolWhitelistedSwapper'
+import AdrenaSetProtocolFeeRecipient from './components/instructions/Adrena/SetProtocolFeeRecipient'
+import AdrenaSetPoolAllowTrade from './components/instructions/Adrena/SetPoolAllowTrade'
+import AdrenaSetPoolAumSoftCapUsd from './components/instructions/Adrena/SetPoolAumSoftCapUsd'
+import AdrenaSetPoolLiquidityState from './components/instructions/Adrena/SetPoolLiquidityState'
+import AdrenaSetVestDelegate from './components/instructions/Adrena/SetVestDelegate'
+import AdrenaSetStakingLmEmissionPotentiometers from './components/instructions/Adrena/SetStakingLmEmissionPotentiometers'
+import AdrenaGenesisOtcIn from './components/instructions/Adrena/GenesisOtcIn'
+import AdrenaInitializeOracleAccount from './components/instructions/Adrena/InitializeOracleAccount'
+import AdrenaPatchCustodiesOracles from './components/instructions/Adrena/PatchCustodiesOracles'
+import AdrenaGenesisOtcOut from './components/instructions/Adrena/GenesisOtcOut'
+import AdrenaAddCustody from './components/instructions/Adrena/AddCustody'
+import AdrenaSetCustodyConfig from './components/instructions/Adrena/SetCustodyConfig'
+import AdrenaAddVest from './components/instructions/Adrena/AddVest'
+import AdrenaCancelVest from './components/instructions/Adrena/CancelVest'
 import DeactivateValidatorStake from './components/instructions/Validators/DeactivateStake'
 import WithdrawValidatorStake from './components/instructions/Validators/WithdrawStake'
 import DelegateStake from './components/instructions/Validators/DelegateStake'
@@ -482,6 +503,27 @@ const New = () => {
       | null
   } = useMemo(
     () => ({
+      [Instructions.AdrenaMintLmTokensFromBucket]: AdrenaMintLmTokensFromBucket,
+      [Instructions.AdrenaMintAllLmTokens]: AdrenaMintAllLmTokens,
+      [Instructions.AdrenaSetCustodyAllowSwap]: AdrenaSetCustodyAllowSwap,
+      [Instructions.AdrenaSetCustodyAllowTrade]: AdrenaSetCustodyAllowTrade,
+      [Instructions.AdrenaSetCustodyMaxCumulativeShortSizeUsd]: AdrenaSetCustodyMaxCumulativeShortSizeUsd,
+      [Instructions.AdrenaSetPoolAllowSwap]: AdrenaSetPoolAllowSwap,
+      [Instructions.AdrenaSetPoolAllowTrade]: AdrenaSetPoolAllowTrade,
+      [Instructions.AdrenaSetPoolAumSoftCapUsd]: AdrenaSetPoolAumSoftCapUsd,
+      [Instructions.AdrenaSetPoolLiquidityState]: AdrenaSetPoolLiquidityState,
+      [Instructions.AdrenaSetVestDelegate]: AdrenaSetVestDelegate,
+      [Instructions.AdrenaSetStakingLmEmissionPotentiometers]: AdrenaSetStakingLmEmissionPotentiometers,
+      [Instructions.AdrenaGenesisOtcIn]: AdrenaGenesisOtcIn,
+      [Instructions.AdrenaGenesisOtcOut]: AdrenaGenesisOtcOut,
+      [Instructions.AdrenaSetProtocolFeeRecipient]: AdrenaSetProtocolFeeRecipient,
+      [Instructions.AdrenaAddCustody]: AdrenaAddCustody,
+      [Instructions.AdrenaSetCustodyConfig]: AdrenaSetCustodyConfig,
+      [Instructions.AdrenaSetPoolWhitelistedSwapper]: AdrenaSetPoolWhitelistedSwapper,
+      [Instructions.AdrenaInitializeOracleAccount]: AdrenaInitializeOracleAccount,
+      [Instructions.AdrenaPatchCustodiesOracles]: AdrenaPatchCustodiesOracles,
+      [Instructions.AdrenaAddVest]: AdrenaAddVest,
+      [Instructions.AdrenaCancelVest]: AdrenaCancelVest,
       [Instructions.Burn]: BurnTokens,
       [Instructions.Transfer]: SplTokenTransfer,
       [Instructions.ProgramUpgrade]: ProgramUpgrade,

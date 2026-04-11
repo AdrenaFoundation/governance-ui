@@ -13,6 +13,7 @@ import { DasNftObject } from '@hooks/queries/digitalAssets'
 
 // Alphabetical order
 export enum PackageEnum {
+  Adrena,
   Common,
   Distribution,
   Dual,
@@ -319,6 +320,27 @@ export interface RelinquishDaoVoteForm {
 }
 
 export enum Instructions {
+  AdrenaMintLmTokensFromBucket,
+  AdrenaMintAllLmTokens,
+  AdrenaSetCustodyAllowSwap,
+  AdrenaSetCustodyAllowTrade,
+  AdrenaSetCustodyMaxCumulativeShortSizeUsd,
+  AdrenaSetPoolAllowSwap,
+  AdrenaSetPoolWhitelistedSwapper,
+  AdrenaSetPoolAllowTrade,
+  AdrenaSetPoolAumSoftCapUsd,
+  AdrenaSetPoolLiquidityState,
+  AdrenaSetVestDelegate,
+  AdrenaSetStakingLmEmissionPotentiometers,
+  AdrenaGenesisOtcIn,
+  AdrenaGenesisOtcOut,
+  AdrenaSetProtocolFeeRecipient,
+  AdrenaAddCustody,
+  AdrenaSetCustodyConfig,
+  AdrenaInitializeOracleAccount,
+  AdrenaPatchCustodiesOracles,
+  AdrenaAddVest,
+  AdrenaCancelVest,
   Base64,
   Burn,
   ChangeMakeDonation,

@@ -4,7 +4,7 @@ import type { EndpointInfo } from '../@types/types'
 import { DEVNET_RPC, MAINNET_RPC } from '@constants/endpoints'
 
 export const BACKUP_CONNECTIONS = [
-  new Connection(`https://rpc.mngo.cloud/rlmk0lo5odee/`, 'recent'),
+  new Connection(`https://rpc.mngo.cloud/rlmk0lo5odee/`, 'confirmed'),
 ]
 
 const ENDPOINTS: EndpointInfo[] = [
@@ -34,7 +34,7 @@ export function getConnectionContext(cluster: string): ConnectionContext {
   const ENDPOINT = ENDPOINTS.find((e) => e.name === cluster) || ENDPOINTS[0]
   return {
     cluster: ENDPOINT!.name as EndpointTypes,
-    current: new Connection(ENDPOINT!.url, 'recent'),
+    current: new Connection(ENDPOINT!.url, 'confirmed'),
     endpoint: ENDPOINT!.url,
   }
 }

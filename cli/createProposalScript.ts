@@ -43,7 +43,7 @@ const PROPOSAL_MINT = new PublicKey(
 class GovernanceCli {
   #connectionContext = {
     cluster: CLUSTER as EndpointTypes,
-    current: new Connection(ENDPOINT_URL, 'recent'),
+    current: new Connection(ENDPOINT_URL, 'confirmed'),
     endpoint: ENDPOINT_URL,
   }
   wallet: NodeWallet

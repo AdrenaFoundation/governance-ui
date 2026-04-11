@@ -2,55 +2,51 @@ import { PublicKey } from '@solana/web3.js'
 import { useQuery } from '@tanstack/react-query'
 import queryClient from './queryClient'
 
-const URL = 'https://lite-api.jup.ag/price/v2'
-
-/* example query
-# Unit price of 1 JUP & 1 SOL based on the Derived Price in USDC
-https://api.jup.ag/price/v2?ids=JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN,So11111111111111111111111111111111111111112
-
-{
-    "data": {
-        "So11111111111111111111111111111111111111112": {
-            "id": "So11111111111111111111111111111111111111112",
-            "type": "derivedPrice",
-            "price": "133.890945000"
-        },
-        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
-            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-            "type": "derivedPrice",
-            "price": "0.751467"
-        }
-    },
-    "timeTaken": 0.00395219
-}
-*/
-/* example intentionally broken query 
-curl -X 'GET' 'https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112&showExtraInfo=true'
-{
-    "data": {
-        "So11111111111111111111111111111111111111112": {
-            "id": "So11111111111111111111111111111111111111112",
-            "type": "derivedPrice",
-            "price": "134.170633378"
-        },
-        "8agCopCHWdpj7mHk3JUWrzt8pHAxMiPX5hLVDJh9TXWv": null
-    },
-    "timeTaken": 0.003186833
-}
-*/
+// Jupiter retired the `price/v2` endpoint (404 "Route not found"). The
+// current endpoint is `price/v3`, which has a different response shape:
+//
+//   v3: flat dict, { "<mint>": { usdPrice: 84.12, liquidity: ..., ... } }
+//   v2: wrapped,   { data: { "<mint>": { id, type, price: "84.12" } }, timeTaken }
+//
+// Downstream consumers in this file (and its exported functions) were
+// written against the v2 shape. Rather than change every consumer, we
+// keep the wrapped `Response` interface and remap the v3 payload into
+// it at the fetch boundary via `fetchPricesV3`. As a side benefit, v3
+// returns usdPrice as a number (v2 returned price as a string), which
+// matches the `price: number` type annotation that was previously
+// lying about the runtime type.
+const URL = 'https://lite-api.jup.ag/price/v3'
 
 type Price = {
   id: string // pubkey,
   // price is in USD
   price: number
-  // removed in v2 API
-  // mintSymbol: string
-  // vsToken: string // pubkey,
-  // vsTokenSymbol: string
 }
 type Response = {
-  data: Record<string, Price> //uses whatever you input (so, pubkey OR symbol). no entry if data not found
+  data: Record<string, Price> // no entry if data not found
   timeTaken: number
+}
+
+type V3Entry = {
+  createdAt?: string
+  liquidity?: number
+  usdPrice?: number
+  blockId?: number
+  decimals?: number
+  priceChange24h?: number
+}
+
+async function fetchPricesV3(ids: string[]): Promise<Response> {
+  if (ids.length === 0) return { data: {}, timeTaken: 0 }
+  const x = await fetch(`${URL}?ids=${ids.join(',')}`)
+  const raw = (await x.json()) as Record<string, V3Entry | null | undefined>
+  const data: Record<string, Price> = {}
+  for (const [mint, entry] of Object.entries(raw)) {
+    if (entry && typeof entry.usdPrice === 'number') {
+      data[mint] = { id: mint, price: entry.usdPrice }
+    }
+  }
+  return { data, timeTaken: 0 }
 }
 
 function* chunks<T>(arr: T[], n: number): Generator<T[], void> {
@@ -69,8 +65,7 @@ export const jupiterPriceQueryKeys = {
 }
 
 const jupQueryFn = async (mint: PublicKey) => {
-  const x = await fetch(`${URL}?ids=${mint?.toString()}`)
-  const response = (await x.json()) as Response
+  const response = await fetchPricesV3([mint.toString()])
   const result = response.data[mint.toString()]
   return result !== undefined
     ? ({ found: true, result } as const)
@@ -113,11 +108,7 @@ export const useJupiterPricesByMintsQuery = (mints: PublicKey[]) => {
     queryFn: async () => {
       const batches = [...chunks(dedupedMints, 100)]
       const responses = await Promise.all(
-        batches.map(async (batch) => {
-          const x = await fetch(`${URL}?ids=${batch.join(',')}`)
-          const response = (await x.json()) as Response
-          return response
-        }),
+        batches.map((batch) => fetchPricesV3(batch.map((m) => m.toString()))),
       )
       const data = responses.reduce(
         (acc, next) => ({ ...acc, ...next.data }),
@@ -155,8 +146,7 @@ export const getJupiterPricesByMintStrings = async (mints: string[]) => {
   const deduped = new Set(mints)
   const dedupedMints = Array.from(deduped)
   try {
-    const x = await fetch(`${URL}?ids=${dedupedMints.join(',')}`)
-    const response = (await x.json()) as Response
+    const response = await fetchPricesV3(dedupedMints)
     const data = response.data
 
     //override chai price if its broken
