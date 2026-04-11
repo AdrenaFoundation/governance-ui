@@ -91,7 +91,12 @@ export function App(props: Props) {
 
   const connectionConfig = useMemo(
     () => ({
-      commitment: 'recent' as const,
+      // 'recent' was a legacy alias removed from Solana RPC schemas;
+      // sendTransaction on current validator versions (apiVersion 3.1+)
+      // rejects it with `unknown variant 'recent', expected one of
+      // 'processed', 'confirmed', 'finalized'`. Use 'confirmed' for
+      // proposal submission safety.
+      commitment: 'confirmed' as const,
       fetch: rpcFetch,
     }),
     [],

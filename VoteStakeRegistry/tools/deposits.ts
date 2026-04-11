@@ -229,7 +229,7 @@ const getVotingPowersForWallets = async ({
               params: [
                 encodedTransaction.tx,
                 {
-                  commitment: 'recent',
+                  commitment: 'confirmed',
                   encoding: 'base64',
                 },
               ],

@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { withSentry } from '@sentry/nextjs'
 import axios, { AxiosError } from 'axios'
 
 // Custom JSON-RPC error code for "all internal providers unavailable".
@@ -239,7 +238,10 @@ export function createRpcProxyHandler(
       .json(buildAllDownBody(body, primaryResult.reason, backupResult.reason))
   }
 
-  return withSentry(handler)
+  // @sentry/nextjs 7.x auto-instruments API routes via the Next.js
+  // integration, so we return the handler directly. The legacy
+  // `withSentry` wrapper was removed from the package's exports.
+  return handler
 }
 
 // Exported so route files can re-export it. Next.js requires the `config`
