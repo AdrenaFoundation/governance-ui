@@ -32,6 +32,7 @@ export interface AddCustodyForm {
   maxLeverage: number
   maxPositionLockedUsd: number
   maxCumulativeShortPositionSizeUsd: number
+  maxCumulativeLongPositionSizeUsd: number
   feeSwapIn: number
   feeSwapOut: number
   feeStableSwapIn: number
@@ -42,6 +43,9 @@ export interface AddCustodyForm {
   feeLiquidation: number
   feeMax: number
   maxHourlyBorrowInterestRate: number
+  maxHourlyFundingRate: number
+  minTotalOiUsd: number
+  imbalanceSensitivityBps: number
 }
 
 export default function AddCustody({
@@ -70,6 +74,7 @@ export default function AddCustody({
     maxLeverage: 1_100_000, // x110
     maxPositionLockedUsd: 250_000,
     maxCumulativeShortPositionSizeUsd: 1_000_000,
+    maxCumulativeLongPositionSizeUsd: 1_000_000,
     feeSwapIn: 10,
     feeSwapOut: 10,
     feeStableSwapIn: 10,
@@ -80,6 +85,9 @@ export default function AddCustody({
     feeLiquidation: 16,
     feeMax: 200,
     maxHourlyBorrowInterestRate: 80000, // 0.008%
+    maxHourlyFundingRate: 0,
+    minTotalOiUsd: 0,
+    imbalanceSensitivityBps: 0,
   })
   const [formErrors, setFormErrors] = useState({})
 
@@ -134,6 +142,9 @@ export default function AddCustody({
           maxCumulativeShortPositionSizeUsd: new BN(
             form.maxCumulativeShortPositionSizeUsd * 10 ** 6
           ),
+          maxCumulativeLongPositionSizeUsd: new BN(
+            form.maxCumulativeLongPositionSizeUsd * 10 ** 6
+          ),
         },
         fees: {
           swapIn: form.feeSwapIn,
@@ -150,6 +161,12 @@ export default function AddCustody({
         },
         borrowRate: {
           maxHourlyBorrowInterestRate: new BN(form.maxHourlyBorrowInterestRate),
+        },
+        virtualFunding: {
+          maxHourlyFundingRate: new BN(form.maxHourlyFundingRate),
+          minTotalOiUsd: new BN(form.minTotalOiUsd * 10 ** 6),
+          imbalanceSensitivityBps: form.imbalanceSensitivityBps,
+          padding: [0, 0, 0, 0, 0, 0],
         },
         ratios: Array.from(Array(8)).map((_, i) => ({
           min: form[`ratio${i + 1}Min`] as number,
@@ -286,6 +303,15 @@ export default function AddCustody({
         inputType: 'number',
       },
       {
+        label: 'Max Cumulative Long Position Size Usd',
+        initialValue:
+          custody.pricing.maxCumulativeLongPositionSizeUsd.toNumber() /
+          10 ** 6,
+        type: InstructionInputType.INPUT,
+        name: 'maxCumulativeLongPositionSizeUsd',
+        inputType: 'number',
+      },
+      {
         label: 'Fee Swap IN (in BPS)',
         initialValue: custody.fees.swapIn,
         type: InstructionInputType.INPUT,
@@ -353,6 +379,28 @@ export default function AddCustody({
         initialValue: custody.borrowRate.maxHourlyBorrowInterestRate,
         type: InstructionInputType.INPUT,
         name: 'maxHourlyBorrowInterestRate',
+        inputType: 'number',
+      },
+      {
+        label: 'Virtual Funding Max Hourly Rate',
+        initialValue: custody.virtualFunding.maxHourlyFundingRate.toNumber(),
+        type: InstructionInputType.INPUT,
+        name: 'maxHourlyFundingRate',
+        inputType: 'number',
+      },
+      {
+        label: 'Virtual Funding Min Total OI Usd',
+        initialValue:
+          custody.virtualFunding.minTotalOiUsd.toNumber() / 10 ** 6,
+        type: InstructionInputType.INPUT,
+        name: 'minTotalOiUsd',
+        inputType: 'number',
+      },
+      {
+        label: 'Virtual Funding Imbalance Sensitivity BPS',
+        initialValue: custody.virtualFunding.imbalanceSensitivityBps,
+        type: InstructionInputType.INPUT,
+        name: 'imbalanceSensitivityBps',
         inputType: 'number',
       },
       ...(Array.from(Array(custodies?.length))

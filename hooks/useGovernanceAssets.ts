@@ -308,6 +308,10 @@ export default function useGovernanceAssets() {
       name: 'Add Custody',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaAddSyntheticCustody]: {
+      name: 'Add Synthetic Custody',
+      packageId: PackageEnum.Adrena,
+    },
     [Instructions.AdrenaSetCustodyConfig]: {
       name: 'Set Custody Config',
       packageId: PackageEnum.Adrena,

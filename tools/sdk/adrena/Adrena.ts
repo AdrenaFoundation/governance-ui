@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import { IDL } from '../../../idls/adrena'
+import IDL from '../../../idls/adrena.json'
 import { AnchorProvider, Program } from '@coral-xyz/anchor'
 
 export enum OriginBucket {
@@ -147,6 +147,13 @@ export default class AdrenaClient {
   public getCustodyPda(pool: PublicKey, mint: PublicKey): PublicKey {
     return PublicKey.findProgramAddressSync(
       [Buffer.from('custody'), pool.toBuffer(), mint.toBuffer()],
+      this.programId,
+    )[0]
+  }
+
+  public getSyntheticCustodyPda(pool: PublicKey, seed: number[]): PublicKey {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from('custody'), pool.toBuffer(), Buffer.from(seed)],
       this.programId,
     )[0]
   }
