@@ -11,7 +11,6 @@ import { InstructionInputType } from '../inputInstructionType'
 import { NewProposalContext } from '../../../new'
 import { AccountType, AssetAccount } from '@utils/uiTypes/assets'
 import useAdrenaClient from '@hooks/useAdrenaClient'
-import { PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import { BN } from '@coral-xyz/anchor'
 import AdrenaClient, { PoolWithPubkey } from '@tools/sdk/adrena/Adrena'
 import useAdrenaPools from '@hooks/useAdrenaPools'
@@ -21,16 +20,22 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@realms-today/spl-governance'
 
-export interface AddCustodyForm {
+// Trade oracle feed IDs for Autonom synthetic assets (adrena-abi autonom.mainnet.json)
+const TRADE_ORACLE_OPTIONS = [
+  { name: 'XAU (Gold) — feed_id 36', value: 36 },
+  { name: 'XAG (Silver) — feed_id 37', value: 37 },
+  { name: 'WTI (Crude Oil) — feed_id 38', value: 38 },
+  { name: 'XBR (Brent Crude) — feed_id 39', value: 39 },
+]
+
+export interface AddSyntheticCustodyForm {
   governedAccount: AssetAccount | null
   pool: {
     name: string
     value: PoolWithPubkey
   } | null
-  mint: string | null
-  custodyOracle: string | null
-  custodyTradeOracle: string | null
-  isStable: boolean
+  seedString: string
+  tradeOracleFeedId: number
   maxInitialLeverage: number
   maxLeverage: number
   maxPositionLockedUsd: number
@@ -48,7 +53,7 @@ export interface AddCustodyForm {
   maxHourlyBorrowInterestRate: number
 }
 
-export default function AddCustody({
+export default function AddSyntheticCustody({
   index,
   governance,
 }: {
@@ -63,28 +68,26 @@ export default function AddCustody({
     (x) => x.type === AccountType.PROGRAM
   )
 
-  const [form, setForm] = useState<AddCustodyForm>({
+  const [form, setForm] = useState<AddSyntheticCustodyForm>({
     governedAccount: null,
     pool: null,
-    mint: null,
-    custodyOracle: null,
-    custodyTradeOracle: null,
-    isStable: false,
-    maxInitialLeverage: 0,
-    maxLeverage: 0,
-    maxPositionLockedUsd: 0,
-    maxCumulativeShortPositionSizeUsd: 0,
-    maxCumulativeLongPositionSizeUsd: 0,
+    seedString: '',
+    tradeOracleFeedId: 36,
+    maxInitialLeverage: 1_050_000, // x105
+    maxLeverage: 1_100_000, // x110
+    maxPositionLockedUsd: 250_000,
+    maxCumulativeShortPositionSizeUsd: 1_000_000,
+    maxCumulativeLongPositionSizeUsd: 1_000_000,
     feeSwapIn: 0,
     feeSwapOut: 0,
     feeStableSwapIn: 0,
     feeStableSwapOut: 0,
     feeAddLiquidity: 0,
     feeRemoveLiquidity: 0,
-    feeClosePosition: 0,
-    feeLiquidation: 0,
-    feeMax: 0,
-    maxHourlyBorrowInterestRate: 0,
+    feeClosePosition: 16,
+    feeLiquidation: 16,
+    feeMax: 200,
+    maxHourlyBorrowInterestRate: 80000, // 0.008%
   })
   const [formErrors, setFormErrors] = useState({})
 
@@ -96,9 +99,7 @@ export default function AddCustody({
 
   const validateInstruction = async (): Promise<boolean> => {
     const { isValid, validationErrors } = await isFormValid(schema, form)
-
     setFormErrors(validationErrors)
-
     return isValid
   }
 
@@ -112,9 +113,7 @@ export default function AddCustody({
       !adrenaClient ||
       !form.pool ||
       !wallet?.publicKey ||
-      !form.mint ||
-      !form.custodyOracle ||
-      !form.custodyTradeOracle
+      !form.seedString
     ) {
       return {
         serializedInstruction: '',
@@ -124,17 +123,21 @@ export default function AddCustody({
       }
     }
 
-    const mint = new PublicKey(form.mint)
+    // Encode seed string as 32-byte zero-padded UTF-8 buffer
+    const seedBytes = Array.from(
+      Buffer.concat([
+        Buffer.from(form.seedString, 'utf8').slice(0, 32),
+        Buffer.alloc(32),
+      ]).slice(0, 32)
+    )
 
-    const custodyPda = adrenaClient.getCustodyPda(form.pool.value.pubkey, mint)
-    const custodyTokenAccountPda = adrenaClient.findCustodyTokenAccountAddress(
+    const custodyPda = adrenaClient.getSyntheticCustodyPda(
       form.pool.value.pubkey,
-      mint
+      seedBytes
     )
 
     const instruction = await adrenaClient.program.methods
-      .addCustody({
-        isStable: form.isStable,
+      .addSyntheticCustody({
         pricing: {
           maxInitialLeverage: form.maxInitialLeverage,
           maxLeverage: form.maxLeverage,
@@ -147,7 +150,7 @@ export default function AddCustody({
           ),
         },
         allowSwap: false,
-        allowTrade: false,
+        allowTrade: true,
         fees: {
           swapIn: form.feeSwapIn,
           swapOut: form.feeSwapOut,
@@ -164,29 +167,20 @@ export default function AddCustody({
         borrowRate: {
           maxHourlyBorrowInterestRate: new BN(form.maxHourlyBorrowInterestRate),
         },
-        ratios: Array.from(Array(8)).map((_, i) => ({
-          min: form[`ratio${i + 1}Min`] as number,
-          target: form[`ratio${i + 1}Target`] as number,
-          max: form[`ratio${i + 1}Max`] as number,
-          padding: [0, 0],
-        })),
-        oracle: AdrenaClient.toLimitedStringBuffer(form.custodyOracle),
-        tradeOracle: AdrenaClient.toLimitedStringBuffer(form.custodyTradeOracle),
-        seed: Array.from(mint.toBytes()),
+        tradeOracle: AdrenaClient.toLimitedStringBuffer('autonom'),
+        tradeOracleFeedId: form.tradeOracleFeedId,
+        seed: seedBytes,
       })
       .accountsStrict({
         admin: governance.nativeTreasuryAddress,
-        cortex: adrenaClient.cortexPda,
-        custody: custodyPda,
-        pool: form.pool.value.pubkey,
-        payer: wallet.publicKey,
+        payer: governance.nativeTreasuryAddress,
         transferAuthority: adrenaClient.transferAuthorityPda,
-        custodyTokenAccount: custodyTokenAccountPda,
+        cortex: adrenaClient.cortexPda,
+        pool: form.pool.value.pubkey,
+        custody: custodyPda,
         oracle: adrenaClient.oraclePda,
-        custodyTokenMint: mint,
         systemProgram: SYSTEM_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
-        rent: SYSVAR_RENT_PUBKEY,
       })
       .instruction()
 
@@ -203,7 +197,7 @@ export default function AddCustody({
       { governedAccount: form.governedAccount?.governance, getInstruction },
       index
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- TODO please fix, it can cause difficult bugs. You might wanna check out https://bobbyhadz.com/blog/react-hooks-exhaustive-deps for info. -@asktree
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, !!pools])
 
   const schema = yup.object().shape({
@@ -211,6 +205,7 @@ export default function AddCustody({
       .object()
       .nullable()
       .required('Program governed account is required'),
+    seedString: yup.string().required('Seed string is required').max(32),
   })
 
   const [inputs, setInputs] = useState<InstructionInput[]>([])
@@ -239,44 +234,25 @@ export default function AddCustody({
       },
     ]
 
-    const pool = form.pool?.value
-
-    if (!pool) {
+    if (!form.pool) {
       return setInputs(base)
     }
-
-    const newCustodyPosition = pool.custodies.findIndex(
-      (x) => x.toBase58() === PublicKey.default.toBase58()
-    )
 
     setInputs([
       ...base,
       {
-        label: 'Mint',
-        initialValue: form.mint,
+        label: 'Seed String (≤32 chars, identifies this synthetic custody)',
+        initialValue: form.seedString,
         type: InstructionInputType.INPUT,
-        name: 'mint',
+        name: 'seedString',
         inputType: 'string',
       },
       {
-        label: 'Custody Oracle',
-        initialValue: form.custodyOracle,
-        type: InstructionInputType.INPUT,
-        name: 'custodyOracle',
-        inputType: 'string',
-      },
-      {
-        label: 'Custody Trade Oracle',
-        initialValue: form.custodyTradeOracle,
-        type: InstructionInputType.INPUT,
-        name: 'custodyTradeOracle',
-        inputType: 'string',
-      },
-      {
-        label: 'Is Stable',
-        initialValue: form.isStable,
-        type: InstructionInputType.SWITCH,
-        name: 'isStable',
+        label: 'Trade Oracle Feed ID',
+        initialValue: form.tradeOracleFeedId,
+        type: InstructionInputType.SELECT,
+        name: 'tradeOracleFeedId',
+        options: TRADE_ORACLE_OPTIONS,
       },
       {
         label: 'Max Initial Leverage (10000 = x1)',
@@ -314,48 +290,6 @@ export default function AddCustody({
         inputType: 'number',
       },
       {
-        label: 'Fee Swap IN (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeSwapIn',
-        inputType: 'number',
-      },
-      {
-        label: 'Fee Swap OUT (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeSwapOut',
-        inputType: 'number',
-      },
-      {
-        label: 'Fee Stable Swap IN (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeStableSwapIn',
-        inputType: 'number',
-      },
-      {
-        label: 'Fee Stable Swap OUT (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeStableSwapOut',
-        inputType: 'number',
-      },
-      {
-        label: 'Fee Add Liquidity (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeAddLiquidity',
-        inputType: 'number',
-      },
-      {
-        label: 'Fee Remove Liquidity (in BPS)',
-        initialValue: 10,
-        type: InstructionInputType.INPUT,
-        name: 'feeRemoveLiquidity',
-        inputType: 'number',
-      },
-      {
         label: 'Fee Close Position (in BPS)',
         initialValue: 16,
         type: InstructionInputType.INPUT,
@@ -378,57 +312,11 @@ export default function AddCustody({
       },
       {
         label: 'Max Hourly Borrow Interest Rate (0.008% = 80000)',
-        initialValue: 80000, // 0.008%
+        initialValue: 80000,
         type: InstructionInputType.INPUT,
         name: 'maxHourlyBorrowInterestRate',
         inputType: 'number',
       },
-      ...(Array.from(Array(newCustodyPosition + 1))
-        .map((_, i) => [
-          {
-            label: `Custody ${i + 1} Min Ratio (${
-              i === newCustodyPosition
-                ? '*NEW CUSTODY'
-                : form.pool!.value.custodies[i].toBase58() !=
-                  PublicKey.default.toBase58()
-                ? form.pool!.value.custodies[i].toBase58().slice(0, 4)
-                : '-'
-            })`,
-            initialValue: form[`ratio${i + 1}Min`],
-            type: InstructionInputType.INPUT,
-            name: `ratio${i + 1}Min`,
-            inputType: 'number',
-          },
-          {
-            label: `Custody ${i + 1} Target Ratio (${
-              i === newCustodyPosition
-                ? '*NEW CUSTODY'
-                : form.pool!.value.custodies[i].toBase58() !=
-                  PublicKey.default.toBase58()
-                ? form.pool!.value.custodies[i].toBase58().slice(0, 4)
-                : '-'
-            })`,
-            initialValue: form[`ratio${i + 1}Target`],
-            type: InstructionInputType.INPUT,
-            name: `ratio${i + 1}Target`,
-            inputType: 'number',
-          },
-          {
-            label: `Custody ${i + 1} Max Ratios (${
-              i === newCustodyPosition
-                ? '*NEW CUSTODY'
-                : form.pool!.value.custodies[i].toBase58() !=
-                  PublicKey.default.toBase58()
-                ? form.pool!.value.custodies[i].toBase58().slice(0, 4)
-                : '-'
-            })`,
-            initialValue: form[`ratio${i + 1}Max`],
-            type: InstructionInputType.INPUT,
-            name: `ratio${i + 1}Max`,
-            inputType: 'number',
-          },
-        ])
-        .flat() as InstructionInput[]),
     ])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

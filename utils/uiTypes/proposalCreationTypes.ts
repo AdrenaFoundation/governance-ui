@@ -336,6 +336,7 @@ export enum Instructions {
   AdrenaGenesisOtcOut,
   AdrenaSetProtocolFeeRecipient,
   AdrenaAddCustody,
+  AdrenaAddSyntheticCustody,
   AdrenaSetCustodyConfig,
   AdrenaInitializeOracleAccount,
   AdrenaPatchCustodiesOracles,

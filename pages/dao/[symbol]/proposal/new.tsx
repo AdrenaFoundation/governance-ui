@@ -77,6 +77,7 @@ import AdrenaInitializeOracleAccount from './components/instructions/Adrena/Init
 import AdrenaPatchCustodiesOracles from './components/instructions/Adrena/PatchCustodiesOracles'
 import AdrenaGenesisOtcOut from './components/instructions/Adrena/GenesisOtcOut'
 import AdrenaAddCustody from './components/instructions/Adrena/AddCustody'
+import AdrenaAddSyntheticCustody from './components/instructions/Adrena/AddSyntheticCustody'
 import AdrenaSetCustodyConfig from './components/instructions/Adrena/SetCustodyConfig'
 import AdrenaAddVest from './components/instructions/Adrena/AddVest'
 import AdrenaCancelVest from './components/instructions/Adrena/CancelVest'
@@ -518,6 +519,7 @@ const New = () => {
       [Instructions.AdrenaGenesisOtcOut]: AdrenaGenesisOtcOut,
       [Instructions.AdrenaSetProtocolFeeRecipient]: AdrenaSetProtocolFeeRecipient,
       [Instructions.AdrenaAddCustody]: AdrenaAddCustody,
+      [Instructions.AdrenaAddSyntheticCustody]: AdrenaAddSyntheticCustody,
       [Instructions.AdrenaSetCustodyConfig]: AdrenaSetCustodyConfig,
       [Instructions.AdrenaSetPoolWhitelistedSwapper]: AdrenaSetPoolWhitelistedSwapper,
       [Instructions.AdrenaInitializeOracleAccount]: AdrenaInitializeOracleAccount,
