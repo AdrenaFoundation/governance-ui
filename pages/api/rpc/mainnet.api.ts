@@ -10,4 +10,9 @@ export const config = {
   },
 }
 
-export default createRpcProxyHandler('RPC_MAINNET_PRIMARY', 'RPC_MAINNET_BACKUP')
+export default createRpcProxyHandler(
+  'RPC_MAINNET_PRIMARY',
+  'RPC_MAINNET_BACKUP',
+  undefined,
+  'RPC_MAINNET_BACKUP_API_KEY',
+)

@@ -59,11 +59,15 @@ type ForwardResult =
   | { ok: true; body: unknown }
   | { ok: false; reason: string }
 
-async function forwardTo(url: string, body: unknown): Promise<ForwardResult> {
+async function forwardTo(
+  url: string,
+  body: unknown,
+  extraHeaders?: Record<string, string>,
+): Promise<ForwardResult> {
   try {
     const res = await axios.post(url, body, {
       timeout: PROXY_TIMEOUT_MS,
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', ...extraHeaders },
       validateStatus: () => true,
     })
     if (res.status >= 400) {
@@ -98,8 +102,9 @@ function looksLikeBatchParseBug(body: unknown): boolean {
 async function forwardWithUnbatchFallback(
   url: string,
   body: unknown,
+  extraHeaders?: Record<string, string>,
 ): Promise<ForwardResult> {
-  const result = await forwardTo(url, body)
+  const result = await forwardTo(url, body, extraHeaders)
 
   // Pass through unless: upstream succeeded at HTTP level, original was
   // a batch, and the response body matches the Triton batch parse-error
@@ -111,7 +116,7 @@ async function forwardWithUnbatchFallback(
   // Workaround: forward each batched item as an individual request.
   const batch = body as unknown[]
   const individual = await Promise.all(
-    batch.map((item) => forwardTo(url, item)),
+    batch.map((item) => forwardTo(url, item, extraHeaders)),
   )
 
   // If any sub-request failed at network level, surface the failure so
@@ -177,9 +182,20 @@ function buildAllDownBody(
   return mkResp((original as { id?: string | number | null })?.id ?? null)
 }
 
+function buildHeaders(
+  apiKeyEnvKey?: string,
+): Record<string, string> | undefined {
+  if (!apiKeyEnvKey) return undefined
+  const key = process.env[apiKeyEnvKey]
+  if (!key) return undefined
+  return { 'X-Api-Key': key }
+}
+
 export function createRpcProxyHandler(
   primaryEnvKey: string,
   backupEnvKey: string,
+  primaryApiKeyEnvKey?: string,
+  backupApiKeyEnvKey?: string,
 ) {
   // TODO: add Origin allowlist when ready to tighten. Currently any origin
   // that can reach this route can call it; the method allowlist is the
@@ -211,7 +227,8 @@ export function createRpcProxyHandler(
       })
     }
 
-    const primaryResult = await forwardWithUnbatchFallback(primary, body)
+    const primaryHeaders = buildHeaders(primaryApiKeyEnvKey)
+    const primaryResult = await forwardWithUnbatchFallback(primary, body, primaryHeaders)
     if (primaryResult.ok) {
       res.setHeader('X-RPC-Served-By', 'primary')
       return res.status(200).json(primaryResult.body)
@@ -226,7 +243,8 @@ export function createRpcProxyHandler(
         )
     }
 
-    const backupResult = await forwardWithUnbatchFallback(backup, body)
+    const backupHeaders = buildHeaders(backupApiKeyEnvKey)
+    const backupResult = await forwardWithUnbatchFallback(backup, body, backupHeaders)
     if (backupResult.ok) {
       res.setHeader('X-RPC-Served-By', 'backup')
       return res.status(200).json(backupResult.body)
