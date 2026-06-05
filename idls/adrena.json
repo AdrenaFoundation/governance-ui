@@ -2,7 +2,7 @@
   "address": "13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet",
   "metadata": {
     "name": "adrena",
-    "version": "2.1.0",
+    "version": "2.1.5",
     "spec": "0.1.0",
     "description": "Adrena",
     "repository": "https://github.com/AdrenaFoundation/adrena"
@@ -16735,6 +16735,155 @@
       ]
     },
     {
+      "name": "register_oracle_feed",
+      "discriminator": [
+        87,
+        251,
+        248,
+        255,
+        188,
+        177,
+        69,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1",
+            "Admin authority (DAO controlled via cortex.has_one = admin)."
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RegisterOracleFeedParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_oracle_feeds_v38_to_v39",
+      "discriminator": [
+        104,
+        198,
+        152,
+        9,
+        214,
+        247,
+        48,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1",
+            "Admin authority (DAO controlled via cortex.has_one = admin)."
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "remove_collateral_long",
       "discriminator": [
         179,
@@ -18671,6 +18820,142 @@
       "returns": "u8"
     },
     {
+      "name": "remove_synthetic_custody",
+      "discriminator": [
+        29,
+        210,
+        157,
+        210,
+        248,
+        235,
+        79,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "transfer_authority",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  110,
+                  115,
+                  102,
+                  101,
+                  114,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#3"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#4"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "custody",
+          "docs": [
+            "#5",
+            "Must be a synthetic custody owned by this pool (token custodies go through",
+            "`remove_custody`, which also drains/closes their vault)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#6"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "resolve_position_borrow_fees",
       "discriminator": [
         220,
@@ -19334,6 +19619,63 @@
       ]
     },
     {
+      "name": "set_confidence_band_bps",
+      "discriminator": [
+        212,
+        89,
+        194,
+        80,
+        123,
+        208,
+        20,
+        64
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SetConfidenceBandBpsParams"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "set_custody_allow_swap",
       "discriminator": [
         70,
@@ -19774,6 +20116,97 @@
           "type": {
             "defined": {
               "name": "SetCustodyMaxCumulativeShortPositionSizeUsdParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_custody_trade_halt",
+      "discriminator": [
+        77,
+        17,
+        66,
+        197,
+        41,
+        248,
+        254,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "#1"
+          ],
+          "signer": true,
+          "relations": [
+            "cortex"
+          ]
+        },
+        {
+          "name": "cortex",
+          "docs": [
+            "#2"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  114,
+                  116,
+                  101,
+                  120
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "#3"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "custody",
+          "docs": [
+            "#4",
+            "Supports both token custodies (PDA from mint) and synthetic custodies (PDA from seed).",
+            "release/39_5 — ALSO asserts `custody.pool == pool` (the explicit owning-pool bind",
+            "the other per-custody setters leave implicit; mirrors migrate_custody_v38_to_v39)."
+          ],
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SetCustodyTradeHaltParams"
             }
           }
         }
@@ -20347,6 +20780,29 @@
               {
                 "kind": "account",
                 "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "#4",
+            "Read-only. Used to verify that the proposed multi_oracle_config is",
+            "satisfiable given the currently-registered provider slots."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  111,
+                  114,
+                  97,
+                  99,
+                  108,
+                  101
+                ]
               }
             ]
           }
@@ -23354,6 +23810,21 @@
       "code": 6108,
       "name": "LiquidationPausedCircuitBreaker",
       "msg": "Liquidation paused: backup oracle infrastructure is down"
+    },
+    {
+      "code": 6109,
+      "name": "InsufficientOracleCoverage",
+      "msg": "Insufficient oracle coverage for pool custodies under proposed multi_oracle_config"
+    },
+    {
+      "code": 6110,
+      "name": "OracleAccountCapacityExhausted",
+      "msg": "Oracle account does not have enough empty slots for the requested registrations"
+    },
+    {
+      "code": 6111,
+      "name": "TradeHalted",
+      "msg": "Trade halted: this custody's close/liquidate exit path is halted by admin"
     }
   ],
   "types": [
@@ -23902,6 +24373,18 @@
             "type": "i64"
           },
           {
+            "name": "feed_market_open_timestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
+            "name": "feed_market_close_timestamps",
+            "type": {
+              "vec": "i64"
+            }
+          },
+          {
             "name": "signature",
             "type": {
               "array": [
@@ -24275,13 +24758,8 @@
             "type": "u8"
           },
           {
-            "name": "_padding",
-            "type": {
-              "array": [
-                "u8",
-                2
-              ]
-            }
+            "name": "confidence_band_bps",
+            "type": "u16"
           },
           {
             "name": "lm_token_mint",
@@ -24588,13 +25066,20 @@
             }
           },
           {
-            "name": "_padding_autonom1",
-            "type": {
-              "array": [
-                "u8",
-                24
-              ]
-            }
+            "name": "market_open_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "market_close_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "market_close_event_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "trade_halt",
+            "type": "u8"
           },
           {
             "name": "_reserved",
@@ -24606,7 +25091,16 @@
                     32
                   ]
                 },
-                6
+                5
+              ]
+            }
+          },
+          {
+            "name": "_reserved_tail",
+            "type": {
+              "array": [
+                "u8",
+                31
               ]
             }
           }
@@ -26058,6 +26552,10 @@
           {
             "name": "pool_type",
             "type": "u8"
+          },
+          {
+            "name": "confiscated_collateral_usd",
+            "type": "u64"
           }
         ]
       }
@@ -27625,6 +28123,40 @@
       }
     },
     {
+      "name": "RegisterOracleFeedParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "docs": [
+              "`OracleProvider as u8`. Must agree with `feed_id`'s range."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "feed_id",
+            "docs": [
+              "Global feed id. Must lie within `provider.feed_id_range()`."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Human-readable feed name used by `custody.oracle` / `custody.trade_oracle`",
+              "lookups (e.g. \"BTCUSD\"). Must be non-default."
+            ],
+            "type": {
+              "defined": {
+                "name": "LimitedString"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "RemoveCollateralEvent",
       "type": {
         "kind": "struct",
@@ -27922,6 +28454,18 @@
       }
     },
     {
+      "name": "SetConfidenceBandBpsParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "band_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "SetCustodyAllowSwapParams",
       "type": {
         "kind": "struct",
@@ -28038,6 +28582,18 @@
           {
             "name": "max_cumulative_short_position_size_usd",
             "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetCustodyTradeHaltParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "trade_halt",
+            "type": "bool"
           }
         ]
       }
