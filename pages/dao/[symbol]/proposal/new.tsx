@@ -81,6 +81,7 @@ import AdrenaAddSyntheticCustody from './components/instructions/Adrena/AddSynth
 import AdrenaSetCustodyConfig from './components/instructions/Adrena/SetCustodyConfig'
 import AdrenaAddVest from './components/instructions/Adrena/AddVest'
 import AdrenaCancelVest from './components/instructions/Adrena/CancelVest'
+import AdrenaIdlInstruction from './components/instructions/Adrena/IdlInstruction'
 import DeactivateValidatorStake from './components/instructions/Validators/DeactivateStake'
 import WithdrawValidatorStake from './components/instructions/Validators/WithdrawStake'
 import DelegateStake from './components/instructions/Validators/DelegateStake'
@@ -526,6 +527,7 @@ const New = () => {
       [Instructions.AdrenaPatchCustodiesOracles]: AdrenaPatchCustodiesOracles,
       [Instructions.AdrenaAddVest]: AdrenaAddVest,
       [Instructions.AdrenaCancelVest]: AdrenaCancelVest,
+      [Instructions.AdrenaIdlInstruction]: AdrenaIdlInstruction,
       [Instructions.Burn]: BurnTokens,
       [Instructions.Transfer]: SplTokenTransfer,
       [Instructions.ProgramUpgrade]: ProgramUpgrade,

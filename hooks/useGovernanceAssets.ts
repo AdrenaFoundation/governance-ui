@@ -324,6 +324,10 @@ export default function useGovernanceAssets() {
       name: 'Cancel Vest',
       packageId: PackageEnum.Adrena,
     },
+    [Instructions.AdrenaIdlInstruction]: {
+      name: 'Generic IDL Instruction',
+      packageId: PackageEnum.Adrena,
+    },
 
     /*
         ██████  ██████  ███    ███ ███    ███  ██████  ███    ██
